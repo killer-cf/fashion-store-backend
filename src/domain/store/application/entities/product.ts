@@ -18,8 +18,12 @@ export class Product extends Entity<ProductProps> {
     return this.props.quantity
   }
 
-  stockIncrement(quantity: number) {
+  increaseStock(quantity: number) {
     this.props.quantity += quantity
+  }
+
+  decreaseStock(quantity: number) {
+    this.props.quantity -= quantity
   }
 
   static create(props: Optional<ProductProps, 'quantity' | 'createdAt'>, id?: UniqueEntityID) {
