@@ -26,12 +26,15 @@ export class Product extends Entity<ProductProps> {
     this.props.quantity -= quantity
   }
 
-  static create(props: Optional<ProductProps, 'quantity' | 'createdAt'>, id?: UniqueEntityID) {
+  static create(
+    props: Optional<ProductProps, 'quantity' | 'createdAt'>,
+    id?: UniqueEntityID,
+  ) {
     const product = new Product(
       {
         name: props.name,
         quantity: props.quantity ?? 0,
-        createdAt: props.createdAt ?? new Date()
+        createdAt: props.createdAt ?? new Date(),
       },
       id,
     )
