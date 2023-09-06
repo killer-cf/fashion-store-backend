@@ -1,3 +1,4 @@
+import { Either, left, right } from '@/core/either'
 import { Product } from '../../enterprise/entities/product'
 import { ProductsRepository } from '../repositories/products-repository'
 import { ProductAlreadyExistsError } from './errors/product-already-exists-error'
@@ -11,9 +12,12 @@ interface CreateProductUseCaseRequest {
   quantity?: number
 }
 
-interface CreateProductUseCaseResponse {
-  product: Product
-}
+type CreateProductUseCaseResponse = Either<
+  ProductAlreadyExistsError,
+  {
+    product: Product
+  }
+>
 
 export class CreateProductUseCase {
   constructor(private productsRepository: ProductsRepository) {}
@@ -29,7 +33,7 @@ export class CreateProductUseCase {
     const productWithSameSku = await this.productsRepository.findBySKU(sku)
 
     if (productWithSameSku) {
-      throw new ProductAlreadyExistsError()
+      return left(new ProductAlreadyExistsError())
     }
 
     const product = Product.create({
@@ -43,6 +47,6 @@ export class CreateProductUseCase {
 
     this.productsRepository.create(product)
 
-    return { product }
+    return right({ product })
   }
 }
