@@ -17,4 +17,10 @@ export class InMemoryProductsRepository implements ProductsRepository {
   async create(product: Product): Promise<void> {
     this.items.push(product)
   }
+
+  async listAll(page: number): Promise<Product[]> {
+    const products = this.items.slice((page - 1) * 20, page * 20)
+
+    return products
+  }
 }
