@@ -45,7 +45,7 @@ export class CreateProductUseCase {
       color,
     })
 
-    this.productsRepository.create(product)
+    await this.productsRepository.create(product)
 
     return right({ product })
   }
