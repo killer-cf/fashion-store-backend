@@ -14,6 +14,7 @@ describe('Create Product', () => {
     const result = await sut.execute({
       brand: 'Xiaomi',
       color: 'green',
+      price: 200000,
       model: '14T',
       name: 'Xiaomi 14T',
       sku: 'XI14TGR',

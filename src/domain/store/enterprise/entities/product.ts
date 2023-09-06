@@ -4,6 +4,7 @@ import { Optional } from '@/core/types/optional'
 
 interface ProductProps {
   name: string
+  price: number
   quantity: number
   sku: string
   brand: string

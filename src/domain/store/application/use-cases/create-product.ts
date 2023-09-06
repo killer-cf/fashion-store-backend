@@ -5,6 +5,7 @@ import { ProductAlreadyExistsError } from './errors/product-already-exists-error
 
 interface CreateProductUseCaseRequest {
   name: string
+  price: number
   sku: string
   brand: string
   model: string
@@ -24,6 +25,7 @@ export class CreateProductUseCase {
 
   async execute({
     name,
+    price,
     quantity,
     sku,
     brand,
@@ -38,6 +40,7 @@ export class CreateProductUseCase {
 
     const product = Product.create({
       name,
+      price,
       sku,
       quantity,
       brand,
