@@ -5,6 +5,7 @@ import { Optional } from '@/core/types/optional'
 interface ProductProps {
   name: string
   quantity: number
+  sku: string
   brand: string
   model: string
   color: string
@@ -19,6 +20,10 @@ export class Product extends Entity<ProductProps> {
 
   get quantity() {
     return this.props.quantity
+  }
+
+  get sku() {
+    return this.props.sku
   }
 
   get brand() {
@@ -47,11 +52,8 @@ export class Product extends Entity<ProductProps> {
   ) {
     const product = new Product(
       {
-        name: props.name,
+        ...props,
         quantity: props.quantity ?? 0,
-        brand: props.brand,
-        color: props.color,
-        model: props.model,
         createdAt: props.createdAt ?? new Date(),
       },
       id,
