@@ -1,10 +1,8 @@
 import { Either, left, right } from '@/core/either'
-import { Product } from '../../enterprise/entities/product'
-import { ProductsRepository } from '../repositories/products-repository'
-import { ProductAlreadyExistsError } from './errors/product-already-exists-error'
-import { ClientsRepository } from '../repositories/clients-repository'
 import { Client } from '../../enterprise/entities/client'
 import { ClientAlreadyExistsError } from './errors/client-already-exists-error'
+import { ClientsRepository } from '../repositories/clients-repository'
+import { HashGenerator } from '../cryptography/hash-generator'
 
 interface RegisterClientUseCaseRequest {
   name: string
@@ -21,7 +19,10 @@ type RegisterClientUseCaseResponse = Either<
 >
 
 export class RegisterClientUseCase {
-  constructor(private clientsRepository: ClientsRepository) {}
+  constructor(
+    private clientsRepository: ClientsRepository,
+    private hashGenerator: HashGenerator,
+  ) {}
 
   async execute({
     name,
@@ -35,11 +36,13 @@ export class RegisterClientUseCase {
       return left(new ClientAlreadyExistsError())
     }
 
+    const hashedPassword = await this.hashGenerator.hash(password)
+
     const client = Client.create({
       name,
       email,
-      password,
       phone,
+      password: hashedPassword,
     })
 
     await this.clientsRepository.create(client)
