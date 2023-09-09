@@ -19,6 +19,20 @@ export class Product extends Entity<ProductProps> {
     return this.props.name
   }
 
+  set name(name: string) {
+    this.props.name = name
+    this.touch()
+  }
+
+  get price() {
+    return this.props.price
+  }
+
+  set price(price: number) {
+    this.props.price = price
+    this.touch()
+  }
+
   get quantity() {
     return this.props.quantity
   }
@@ -37,6 +51,18 @@ export class Product extends Entity<ProductProps> {
 
   get color() {
     return this.props.color
+  }
+
+  get createdAt() {
+    return this.props.createdAt
+  }
+
+  get updatedAt() {
+    return this.props.updatedAt
+  }
+
+  private touch() {
+    this.props.updatedAt = new Date()
   }
 
   increaseStock(quantity: number) {
