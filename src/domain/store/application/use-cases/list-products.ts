@@ -1,6 +1,7 @@
 import { Either, right } from '@/core/either'
 import { Product } from '../../enterprise/entities/product'
 import { ProductsRepository } from '../repositories/products-repository'
+import { Injectable } from '@nestjs/common'
 
 interface ListProductsUseCaseRequest {
   page: number
@@ -13,6 +14,7 @@ type ListProductsUseCaseResponse = Either<
   }
 >
 
+@Injectable()
 export class ListProductsUseCase {
   constructor(private productsRepository: ProductsRepository) {}
 
