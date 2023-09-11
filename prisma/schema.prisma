@@ -22,3 +22,17 @@ model User {
 
   @@map("users")
 }
+
+model Product {
+  id        String    @id @default(uuid())
+  sku       String    @unique
+  name      String
+  price     Int
+  brand     String
+  model     String
+  color     String
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime? @updatedAt @map("updated_at")
+
+  @@map("products")
+}
