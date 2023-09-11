@@ -11,8 +11,8 @@ type State =
   | 'SENT'
   | 'FINISHED'
 
-interface OrderProps {
-  value: number
+export interface OrderProps {
+  totalPrice: number
   clientId: UniqueEntityID
   address: string
   state: State
@@ -23,8 +23,8 @@ interface OrderProps {
 }
 
 export class Order extends AggregateRoot<OrderProps> {
-  get value() {
-    return this.props.value
+  get totalPrice() {
+    return this.props.totalPrice
   }
 
   get clientId() {
@@ -46,6 +46,10 @@ export class Order extends AggregateRoot<OrderProps> {
 
   get items() {
     return this.props.items
+  }
+
+  set items(items: OrderItem[]) {
+    this.props.items = items
   }
 
   get trackingCode() {

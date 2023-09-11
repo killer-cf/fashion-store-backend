@@ -42,7 +42,7 @@ describe('Edit product', () => {
     }
   })
 
-  it.skip('should not be able to edit product if does not admin', async () => {
+  it('should not be able to edit product if does not admin', async () => {
     const product = makeProduct()
 
     inMemoryProductsRepository.create(product)
