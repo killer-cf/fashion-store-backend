@@ -2,6 +2,7 @@ import { Either, left, right } from '@/core/either'
 import { Product } from '../../enterprise/entities/product'
 import { ProductsRepository } from '../repositories/products-repository'
 import { ProductAlreadyExistsError } from './errors/product-already-exists-error'
+import { Injectable } from '@nestjs/common'
 
 interface CreateProductUseCaseRequest {
   name: string
@@ -20,6 +21,7 @@ type CreateProductUseCaseResponse = Either<
   }
 >
 
+@Injectable()
 export class CreateProductUseCase {
   constructor(private productsRepository: ProductsRepository) {}
 
