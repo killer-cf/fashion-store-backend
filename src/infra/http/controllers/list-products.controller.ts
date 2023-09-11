@@ -3,6 +3,7 @@ import { ZodValidationPipe } from '@/infra/pipes/zod-validation-pipe'
 import { BadRequestException, Controller, Get, Query } from '@nestjs/common'
 import { z } from 'zod'
 import { ProductPresenter } from '../presenters/product-presenter'
+import { Public } from '@/infra/auth/public'
 
 const pageQueryParamSchema = z
   .string()
@@ -19,6 +20,7 @@ type PageQueryParamSchema = z.infer<typeof pageQueryParamSchema>
 export class ListProductsController {
   constructor(private listProducts: ListProductsUseCase) {}
 
+  @Public()
   @Get()
   async handle(@Query('page', queryValidationPipe) page: PageQueryParamSchema) {
     const result = await this.listProducts.execute({
