@@ -7,6 +7,8 @@ import { ListProductsUseCase } from '@/domain/store/application/use-cases/list-p
 import { CryptographyModule } from '../cryptography/cryptography.module'
 import { CreateAccountController } from './controllers/create-account.controller'
 import { RegisterClientUseCase } from '@/domain/store/application/use-cases/register-client'
+import { AuthenticateClientUseCase } from '@/domain/store/application/use-cases/authenticate-client'
+import { AuthenticateController } from './controllers/authenticate.controller'
 
 @Module({
   imports: [DatabaseModule, CryptographyModule],
@@ -14,7 +16,13 @@ import { RegisterClientUseCase } from '@/domain/store/application/use-cases/regi
     CreateProductController,
     ListProductsController,
     CreateAccountController,
+    AuthenticateController,
   ],
-  providers: [CreateProductUseCase, ListProductsUseCase, RegisterClientUseCase],
+  providers: [
+    CreateProductUseCase,
+    ListProductsUseCase,
+    RegisterClientUseCase,
+    AuthenticateClientUseCase,
+  ],
 })
 export class HttpModule {}
