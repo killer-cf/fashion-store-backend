@@ -19,20 +19,50 @@ model User {
   password String
   phone    String?
   role     UserRole @default(CLIENT)
+  Order    Order[]
 
   @@map("users")
 }
 
 model Product {
-  id        String    @id @default(uuid())
-  sku       String    @unique
-  name      String
-  price     Int
-  brand     String
-  model     String
-  color     String
-  createdAt DateTime  @default(now()) @map("created_at")
-  updatedAt DateTime? @updatedAt @map("updated_at")
+  id          String      @id @default(uuid())
+  sku         String      @unique
+  name        String
+  price       Int
+  brand       String
+  model       String
+  color       String
+  createdAt   DateTime    @default(now()) @map("created_at")
+  updatedAt   DateTime?   @updatedAt @map("updated_at")
+  order_items OrderItem[]
 
   @@map("products")
+}
+
+model Order {
+  id           String      @id @default(uuid())
+  totalPrice   Int
+  address      String
+  trackingCode String?
+  state        String
+  client_id    String
+  order_items  OrderItem[]
+  createdAt    DateTime    @default(now()) @map("created_at")
+  updatedAt    DateTime?   @updatedAt @map("updated_at")
+
+  client User @relation(fields: [client_id], references: [id])
+
+  @@map("orders")
+}
+
+model OrderItem {
+  id         String @id @default(uuid())
+  quantity   Int
+  product_id String
+  order_id   String
+
+  order   Order   @relation(fields: [order_id], references: [id])
+  product Product @relation(fields: [product_id], references: [id])
+
+  @@map("order_items")
 }
