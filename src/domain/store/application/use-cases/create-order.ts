@@ -6,6 +6,7 @@ import { OrderItem } from '../../enterprise/entities/order-item'
 import { ProductsRepository } from '../repositories/products-repository'
 import { Product } from '../../enterprise/entities/product'
 import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error'
+import { Injectable } from '@nestjs/common'
 
 interface CreateOrderUseCaseRequest {
   clientId: string
@@ -28,6 +29,7 @@ type ProductItem = {
   quantity: number
 }
 
+@Injectable()
 export class CreateOrderUseCase {
   constructor(
     private ordersRepository: OrdersRepository,
