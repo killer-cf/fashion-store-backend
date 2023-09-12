@@ -3,6 +3,7 @@ import { Client } from '../../enterprise/entities/client'
 import { ClientAlreadyExistsError } from './errors/client-already-exists-error'
 import { ClientsRepository } from '../repositories/clients-repository'
 import { HashGenerator } from '../cryptography/hash-generator'
+import { Injectable } from '@nestjs/common'
 
 interface RegisterClientUseCaseRequest {
   name: string
@@ -18,6 +19,7 @@ type RegisterClientUseCaseResponse = Either<
   }
 >
 
+@Injectable()
 export class RegisterClientUseCase {
   constructor(
     private clientsRepository: ClientsRepository,
