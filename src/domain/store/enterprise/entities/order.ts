@@ -2,20 +2,13 @@ import { UniqueEntityID } from '@/core/entities/unique-entity-id'
 import { OrderItem } from './order-item'
 import { Optional } from '@/core/types/optional'
 import { AggregateRoot } from '@/core/entities/aggregate-root'
-
-type State =
-  | 'PENDING'
-  | 'APPROVED'
-  | 'RECUSED'
-  | 'CANCELED'
-  | 'SENT'
-  | 'FINISHED'
+import { OrderState } from './value-objects/order-state'
 
 export interface OrderProps {
   totalPrice: number
   clientId: UniqueEntityID
   address: string
-  state: State
+  state: OrderState
   items: OrderItem[]
   trackingCode?: string | null
   createdAt: Date
@@ -39,7 +32,7 @@ export class Order extends AggregateRoot<OrderProps> {
     return this.props.state
   }
 
-  set state(state: State) {
+  set state(state: OrderState) {
     this.props.state = state
     this.touch()
   }
@@ -79,7 +72,7 @@ export class Order extends AggregateRoot<OrderProps> {
   ) {
     const order = new Order(
       {
-        state: props.state ?? 'PENDING',
+        state: props.state ?? new OrderState('PENDING'),
         createdAt: props.createdAt ?? new Date(),
         ...props,
       },
