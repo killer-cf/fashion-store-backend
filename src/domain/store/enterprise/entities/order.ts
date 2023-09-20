@@ -2,7 +2,7 @@ import { UniqueEntityID } from '@/core/entities/unique-entity-id'
 import { OrderItem } from './order-item'
 import { Optional } from '@/core/types/optional'
 import { AggregateRoot } from '@/core/entities/aggregate-root'
-import { OrderState } from './value-objects/order-state'
+import { OrderState, State } from './value-objects/order-state'
 
 export interface OrderProps {
   totalPrice: number
@@ -62,6 +62,26 @@ export class Order extends AggregateRoot<OrderProps> {
     return this.props.updatedAt
   }
 
+  approve() {
+    this.state = new OrderState(State.APPROVED)
+  }
+
+  cancel() {
+    this.state = new OrderState(State.CANCELED)
+  }
+
+  refuse() {
+    this.state = new OrderState(State.RECUSED)
+  }
+
+  send() {
+    this.state = new OrderState(State.SENT)
+  }
+
+  finish() {
+    this.state = new OrderState(State.FINISHED)
+  }
+
   private touch() {
     this.props.updatedAt = new Date()
   }
@@ -72,7 +92,7 @@ export class Order extends AggregateRoot<OrderProps> {
   ) {
     const order = new Order(
       {
-        state: props.state ?? new OrderState('PENDING'),
+        state: props.state ?? new OrderState(State.PENDING),
         createdAt: props.createdAt ?? new Date(),
         ...props,
       },

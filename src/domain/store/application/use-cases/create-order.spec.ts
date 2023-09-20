@@ -47,7 +47,9 @@ describe('Create Order', () => {
     expect(result.isRight()).toBe(true)
     if (result.isRight()) {
       expect(inMemoryOrdersRepository.items[0]).toEqual(result.value?.order)
-      expect(inMemoryOrdersRepository.items[0].state).toEqual('PENDING')
+      expect(inMemoryOrdersRepository.items[0].state.toString()).toEqual(
+        'PENDING',
+      )
       expect(inMemoryOrdersRepository.items[0].totalPrice).toEqual(8000)
       expect(inMemoryOrdersRepository.items[0].items).toHaveLength(2)
     }
