@@ -9,7 +9,10 @@ export class PrismaClientsRepository implements ClientsRepository {
   constructor(private prisma: PrismaService) {}
   async findByEmail(email: string): Promise<Client | null> {
     const client = await this.prisma.user.findUnique({
-      where: { email },
+      where: {
+        email,
+        role: 'CLIENT',
+      },
     })
 
     if (!client) {
@@ -21,7 +24,7 @@ export class PrismaClientsRepository implements ClientsRepository {
 
   async findById(id: string): Promise<Client | null> {
     const client = await this.prisma.user.findUnique({
-      where: { id },
+      where: { id, role: 'CLIENT' },
     })
 
     if (!client) {

@@ -21,6 +21,7 @@ export class PrismaClientMapper {
       name: client.name,
       email: client.email,
       password: client.password,
+      role: 'CLIENT',
     }
   }
 }
