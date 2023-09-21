@@ -1,17 +1,29 @@
 import { InMemoryProductsRepository } from 'test/repositories/in-memory-products-repository'
 import { CreateProductUseCase } from './create-product'
+import { InMemoryAdminsRepository } from 'test/repositories/in-memory-admins-repository'
+import { makeAdmin } from 'test/factories/make-admin'
 
 describe('Create Product', () => {
   let inMemoryProductsRepository: InMemoryProductsRepository
+  let inMemoryAdminsRepository: InMemoryAdminsRepository
   let sut: CreateProductUseCase
 
   beforeEach(() => {
     inMemoryProductsRepository = new InMemoryProductsRepository()
-    sut = new CreateProductUseCase(inMemoryProductsRepository)
+    inMemoryAdminsRepository = new InMemoryAdminsRepository()
+    sut = new CreateProductUseCase(
+      inMemoryProductsRepository,
+      inMemoryAdminsRepository,
+    )
   })
 
   it('should be able to create a product', async () => {
+    const admin = makeAdmin()
+
+    inMemoryAdminsRepository.create(admin)
+
     const result = await sut.execute({
+      adminId: admin.id.toString(),
       brand: 'Xiaomi',
       color: 'green',
       price: 200000,

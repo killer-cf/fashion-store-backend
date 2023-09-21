@@ -1,5 +1,7 @@
 import { CreateProductUseCase } from '@/domain/store/application/use-cases/create-product'
 import { ProductAlreadyExistsError } from '@/domain/store/application/use-cases/errors/product-already-exists-error'
+import { CurrentUser } from '@/infra/auth/current-user-decorator'
+import { UserPayload } from '@/infra/auth/jwt.strategy'
 import { ZodValidationPipe } from '@/infra/pipes/zod-validation-pipe'
 import {
   BadRequestException,
@@ -22,16 +24,24 @@ const createProductSchema = z.object({
 
 type CreateProductBody = z.infer<typeof createProductSchema>
 
+const bodyValidationPipe = new ZodValidationPipe(createProductSchema)
+
 @Controller('/products')
 export class CreateProductController {
   constructor(private createProduct: CreateProductUseCase) {}
 
   @Post()
-  @UsePipes(new ZodValidationPipe(createProductSchema))
-  async handle(@Body() body: CreateProductBody) {
+  @UsePipes()
+  async handle(
+    @Body(bodyValidationPipe) body: CreateProductBody,
+    @CurrentUser() adminUser: UserPayload,
+  ) {
     const { name, price, sku, brand, model, color } = body
 
+    const adminId = adminUser.sub
+
     const result = await this.createProduct.execute({
+      adminId,
       name,
       price,
       sku,
