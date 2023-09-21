@@ -62,19 +62,22 @@ export class CreateOrderUseCase {
       return acc + item.product.price * item.quantity
     }, 0)
 
+    const order = Order.create({
+      clientId: new UniqueEntityID(clientId),
+      address,
+      items: [],
+      totalPrice: totalOfProductItems,
+    })
+
     const orderItems = items.map((item) => {
       return OrderItem.create({
+        orderId: order.id,
         productId: new UniqueEntityID(item.productId),
         quantity: item.quantity,
       })
     })
 
-    const order = Order.create({
-      clientId: new UniqueEntityID(clientId),
-      address,
-      items: orderItems,
-      totalPrice: totalOfProductItems,
-    })
+    order.items = orderItems
 
     await this.ordersRepository.create(order)
 

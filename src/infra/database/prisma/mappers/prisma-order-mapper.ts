@@ -19,6 +19,7 @@ export class PrismaOrderMapper {
   static toDomain(raw: PrismaOrderWithItems): Order {
     const items = raw.order_items.map((item) => {
       return OrderItem.create({
+        orderId: new UniqueEntityID(item.order_id),
         productId: new UniqueEntityID(item.product_id),
         quantity: item.quantity,
       })
@@ -40,6 +41,15 @@ export class PrismaOrderMapper {
   }
 
   static toPrisma(order: Order): Prisma.OrderUncheckedCreateInput {
+    const orderItems: Prisma.OrderItemUncheckedCreateWithoutOrderInput[] =
+      order.items.map((item) => {
+        return {
+          id: item.id.toString(),
+          product_id: item.productId.toString(),
+          quantity: item.quantity,
+        }
+      })
+
     return {
       id: order.id.toString(),
       address: order.address,
@@ -47,6 +57,9 @@ export class PrismaOrderMapper {
       totalPrice: order.totalPrice,
       client_id: order.clientId.toString(),
       state: order.state.toString(),
+      order_items: {
+        create: orderItems,
+      },
       createdAt: order.createdAt,
       updatedAt: order.updatedAt,
     }
