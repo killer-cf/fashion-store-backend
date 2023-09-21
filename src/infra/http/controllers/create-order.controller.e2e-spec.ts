@@ -79,8 +79,24 @@ describe('Create order (e2e)', () => {
       where: {
         client_id: user.id,
       },
+      include: {
+        order_items: true,
+      },
     })
 
     expect(order).toBeTruthy()
+    expect(order?.order_items).toHaveLength(2)
+    expect(order?.order_items).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          product_id: product1.id,
+          quantity: 1,
+        }),
+        expect.objectContaining({
+          product_id: product2.id,
+          quantity: 2,
+        }),
+      ]),
+    )
   })
 })
