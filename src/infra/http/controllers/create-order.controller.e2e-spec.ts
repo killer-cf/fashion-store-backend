@@ -1,60 +1,49 @@
 import { AppModule } from '@/infra/app.module'
+import { DatabaseModule } from '@/infra/database/database.module'
 import { PrismaService } from '@/infra/database/prisma/prisma.service'
 import { INestApplication } from '@nestjs/common'
 import { JwtService } from '@nestjs/jwt'
 import { Test } from '@nestjs/testing'
 import request from 'supertest'
+import { ClientFactory } from 'test/factories/make-client'
+import { ProductFactory } from 'test/factories/make-product'
 
 describe('Create order (e2e)', () => {
   let app: INestApplication
   let prisma: PrismaService
   let jwt: JwtService
+  let clientFactory: ClientFactory
+  let productFactory: ProductFactory
 
   beforeAll(async () => {
     const moduleRef = await Test.createTestingModule({
-      imports: [AppModule],
+      imports: [AppModule, DatabaseModule],
+      providers: [ClientFactory, ProductFactory],
     }).compile()
 
     app = moduleRef.createNestApplication()
 
     jwt = moduleRef.get(JwtService)
     prisma = moduleRef.get(PrismaService)
+    clientFactory = moduleRef.get(ClientFactory)
+    productFactory = moduleRef.get(ProductFactory)
 
     await app.init()
   })
 
   test('[POST] /orders', async () => {
-    const user = await prisma.user.create({
-      data: {
-        name: 'jopnh doe',
-        email: 'jonh@doe.com',
-        password: 'password',
-      },
-    })
+    const client = await clientFactory.makePrismaClient()
 
-    const product1 = await prisma.product.create({
-      data: {
-        name: 'Tv 4k',
+    const [product1, product2] = await Promise.all([
+      productFactory.makePrismaProduct({
         price: 30000,
-        sku: 'adsdasd',
-        brand: 'xiaomi',
-        model: '9t',
-        color: 'red',
-      },
-    })
-
-    const product2 = await prisma.product.create({
-      data: {
-        name: 'Tv 8k',
+      }),
+      productFactory.makePrismaProduct({
         price: 90000,
-        sku: 'adsdsdasd',
-        brand: 'xiaomi',
-        model: '10',
-        color: 'green',
-      },
-    })
+      }),
+    ])
 
-    const accessToken = jwt.sign({ sub: user.id })
+    const accessToken = jwt.sign({ sub: client.id.toString() })
 
     const response = await request(app.getHttpServer())
       .post('/orders')
@@ -63,11 +52,11 @@ describe('Create order (e2e)', () => {
         address: 'Rua Oscar Raposo, 200',
         items: [
           {
-            productId: product1.id,
+            productId: product1.id.toString(),
             quantity: 1,
           },
           {
-            productId: product2.id,
+            productId: product2.id.toString(),
             quantity: 2,
           },
         ],
@@ -77,7 +66,7 @@ describe('Create order (e2e)', () => {
 
     const order = await prisma.order.findFirst({
       where: {
-        client_id: user.id,
+        client_id: client.id.toString(),
       },
       include: {
         order_items: true,
@@ -85,15 +74,16 @@ describe('Create order (e2e)', () => {
     })
 
     expect(order).toBeTruthy()
+    expect(order?.totalPrice).toEqual(210_000)
     expect(order?.order_items).toHaveLength(2)
     expect(order?.order_items).toEqual(
       expect.arrayContaining([
         expect.objectContaining({
-          product_id: product1.id,
+          product_id: product1.id.toString(),
           quantity: 1,
         }),
         expect.objectContaining({
-          product_id: product2.id,
+          product_id: product2.id.toString(),
           quantity: 2,
         }),
       ]),

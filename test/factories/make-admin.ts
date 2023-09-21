@@ -1,6 +1,8 @@
 import { UniqueEntityID } from '@/core/entities/unique-entity-id'
 import { Admin, AdminProps } from '@/domain/store/enterprise/entities/admin'
+import { PrismaService } from '@/infra/database/prisma/prisma.service'
 import { faker } from '@faker-js/faker'
+import { Injectable } from '@nestjs/common'
 
 export function makeAdmin(
   override: Partial<AdminProps> = {},
