@@ -5,7 +5,9 @@ export class InMemoryBrandsRepository implements BrandsRepository {
   public items: Brand[] = []
 
   async findByName(name: string): Promise<Brand | null> {
-    const brand = this.items.find((brand) => brand.name === name)
+    const brand = this.items.find(
+      (brand) => brand.name.toLowerCase() === name.toLowerCase(),
+    )
 
     if (!brand) {
       return null
