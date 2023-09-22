@@ -5,6 +5,8 @@ import { ProductAlreadyExistsError } from './errors/product-already-exists-error
 import { Injectable } from '@nestjs/common'
 import { AdminsRepository } from '../repositories/admins-repository'
 import { NotAllowedError } from '@/core/errors/not-allowed-error'
+import { Brand } from '../../enterprise/entities/brand'
+import { BrandsRepository } from '../repositories/brands-repository'
 
 interface CreateProductUseCaseRequest {
   adminId: string
@@ -29,6 +31,7 @@ export class CreateProductUseCase {
   constructor(
     private productsRepository: ProductsRepository,
     private adminsRepository: AdminsRepository,
+    private brandsRepository: BrandsRepository,
   ) {}
 
   async execute({
@@ -53,14 +56,20 @@ export class CreateProductUseCase {
       return left(new ProductAlreadyExistsError())
     }
 
+    const brandOnRepository = await this.brandsRepository.findByName(brand)
+
+    if (!brandOnRepository) {
+      return left(new ProductAlreadyExistsError())
+    }
+
     const product = Product.create({
       name,
       price,
       sku,
       quantity,
-      brand,
       model,
       color,
+      brand: Brand.create(brandOnRepository, brandOnRepository.id),
     })
 
     await this.productsRepository.create(product)
