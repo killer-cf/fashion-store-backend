@@ -7,6 +7,7 @@ import { AdminsRepository } from '../repositories/admins-repository'
 import { NotAllowedError } from '@/core/errors/not-allowed-error'
 import { Brand } from '../../enterprise/entities/brand'
 import { BrandsRepository } from '../repositories/brands-repository'
+import { BrandAlreadyExistsError } from './errors/brand-already-exists-error'
 
 interface CreateProductUseCaseRequest {
   adminId: string
@@ -20,7 +21,7 @@ interface CreateProductUseCaseRequest {
 }
 
 type CreateProductUseCaseResponse = Either<
-  ProductAlreadyExistsError | NotAllowedError,
+  ProductAlreadyExistsError | NotAllowedError | BrandAlreadyExistsError,
   {
     product: Product
   }
@@ -59,7 +60,7 @@ export class CreateProductUseCase {
     const brandOnRepository = await this.brandsRepository.findByName(brand)
 
     if (!brandOnRepository) {
-      return left(new ProductAlreadyExistsError())
+      return left(new BrandAlreadyExistsError())
     }
 
     const product = Product.create({
