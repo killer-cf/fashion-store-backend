@@ -1,14 +1,12 @@
 import { Entity } from '@/core/entities/entity'
 import { UniqueEntityID } from '@/core/entities/unique-entity-id'
 import { Optional } from '@/core/types/optional'
-import { Brand } from './brand'
 
 export interface ProductProps {
   name: string
   price: number
   quantity: number
   sku: string
-  brand: Brand
   model: string
   color: string
   createdAt: Date
@@ -40,10 +38,6 @@ export class Product extends Entity<ProductProps> {
 
   get sku() {
     return this.props.sku
-  }
-
-  get brand() {
-    return this.props.brand
   }
 
   get model() {
