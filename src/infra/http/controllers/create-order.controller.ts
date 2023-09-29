@@ -1,6 +1,7 @@
 import { CreateOrderUseCase } from '@/domain/store/application/use-cases/create-order'
 import { CurrentUser } from '@/infra/auth/current-user-decorator'
 import { UserPayload } from '@/infra/auth/jwt.strategy'
+import { Roles } from '@/infra/auth/roles'
 import { ZodValidationPipe } from '@/infra/pipes/zod-validation-pipe'
 import { BadRequestException, Body, Controller, Post } from '@nestjs/common'
 import { z } from 'zod'
@@ -20,6 +21,7 @@ type CreateOrderBody = z.infer<typeof createOrderSchema>
 
 const bodyValidationPipe = new ZodValidationPipe(createOrderSchema)
 
+@Roles('ADMIN')
 @Controller('/orders')
 export class CreateOrderController {
   constructor(private createOrder: CreateOrderUseCase) {}

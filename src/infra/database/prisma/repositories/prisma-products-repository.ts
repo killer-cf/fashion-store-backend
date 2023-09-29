@@ -13,6 +13,9 @@ export class PrismaProductsRepository implements ProductsRepository {
       where: {
         sku,
       },
+      include: {
+        brand: true,
+      },
     })
 
     if (!product) {
@@ -26,6 +29,9 @@ export class PrismaProductsRepository implements ProductsRepository {
     const product = await this.prisma.product.findUnique({
       where: {
         id,
+      },
+      include: {
+        brand: true,
       },
     })
 
@@ -43,6 +49,9 @@ export class PrismaProductsRepository implements ProductsRepository {
       },
       take: 20,
       skip: (page - 1) * 20,
+      include: {
+        brand: true,
+      },
     })
 
     return products.map(PrismaProductMapper.toDomain)

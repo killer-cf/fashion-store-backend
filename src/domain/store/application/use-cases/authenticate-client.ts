@@ -44,7 +44,10 @@ export class AuthenticateClientUseCase {
       return left(new WrongCredentialsError())
     }
 
-    const accessToken = await this.encrypter.encrypt({ id: client.id })
+    const accessToken = await this.encrypter.encrypt({
+      id: client.id,
+      role: 'CLIENT',
+    })
 
     return right({ access_token: accessToken })
   }

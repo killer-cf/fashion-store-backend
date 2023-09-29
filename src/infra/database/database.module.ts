@@ -8,6 +8,8 @@ import { OrdersRepository } from '@/domain/store/application/repositories/orders
 import { PrismaOrdersRepository } from './prisma/repositories/prisma-orders-repository'
 import { AdminsRepository } from '@/domain/store/application/repositories/admins-repository'
 import { PrismaAdminsRepository } from './prisma/repositories/prisma-admins-repository'
+import { BrandsRepository } from '@/domain/store/application/repositories/brands-repository'
+import { PrismaBrandsRepository } from './prisma/repositories/prisma-brands-repository'
 
 @Module({
   providers: [
@@ -16,6 +18,7 @@ import { PrismaAdminsRepository } from './prisma/repositories/prisma-admins-repo
     { provide: ClientsRepository, useClass: PrismaClientsRepository },
     { provide: AdminsRepository, useClass: PrismaAdminsRepository },
     { provide: OrdersRepository, useClass: PrismaOrdersRepository },
+    { provide: BrandsRepository, useClass: PrismaBrandsRepository },
   ],
   exports: [
     PrismaService,
@@ -23,6 +26,7 @@ import { PrismaAdminsRepository } from './prisma/repositories/prisma-admins-repo
     ClientsRepository,
     AdminsRepository,
     OrdersRepository,
+    BrandsRepository,
   ],
 })
 export class DatabaseModule {}
