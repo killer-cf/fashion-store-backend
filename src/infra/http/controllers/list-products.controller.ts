@@ -3,7 +3,7 @@ import { ZodValidationPipe } from '@/infra/pipes/zod-validation-pipe'
 import { BadRequestException, Controller, Get, Query } from '@nestjs/common'
 import { z } from 'zod'
 import { ProductPresenter } from '../presenters/product-presenter'
-import { Public } from '@/infra/auth/public'
+import { Public } from '@/infra/auth/public.decorator'
 
 const pageQueryParamSchema = z
   .string()

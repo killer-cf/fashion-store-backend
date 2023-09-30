@@ -1,6 +1,6 @@
 import { AuthenticateClientUseCase } from '@/domain/store/application/use-cases/authenticate-client'
 import { WrongCredentialsError } from '@/domain/store/application/use-cases/errors/wrong-credentials-error'
-import { Public } from '@/infra/auth/public'
+import { Public } from '@/infra/auth/public.decorator'
 import { ZodValidationPipe } from '@/infra/pipes/zod-validation-pipe'
 import {
   BadRequestException,

@@ -1,6 +1,6 @@
 import { CreateProductUseCase } from '@/domain/store/application/use-cases/create-product'
 import { ProductAlreadyExistsError } from '@/domain/store/application/use-cases/errors/product-already-exists-error'
-import { Roles } from '@/infra/auth/roles'
+import { Roles } from '@/infra/auth/roles.decorator'
 import { ZodValidationPipe } from '@/infra/pipes/zod-validation-pipe'
 import {
   BadRequestException,

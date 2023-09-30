@@ -1,6 +1,6 @@
 import { ClientAlreadyExistsError } from '@/domain/store/application/use-cases/errors/client-already-exists-error'
 import { RegisterClientUseCase } from '@/domain/store/application/use-cases/register-client'
-import { Public } from '@/infra/auth/public'
+import { Public } from '@/infra/auth/public.decorator'
 import { ZodValidationPipe } from '@/infra/pipes/zod-validation-pipe'
 import {
   BadRequestException,

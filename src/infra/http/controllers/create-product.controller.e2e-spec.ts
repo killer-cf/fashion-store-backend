@@ -88,7 +88,6 @@ describe('Create product (e2e)', () => {
         price: 30000,
       },
     })
-    console.log(product)
 
     expect(product).toBeFalsy()
   })
