@@ -3,7 +3,6 @@ import { Product } from '../../enterprise/entities/product'
 import { ProductsRepository } from '../repositories/products-repository'
 import { ProductAlreadyExistsError } from './errors/product-already-exists-error'
 import { Injectable } from '@nestjs/common'
-import { AdminsRepository } from '../repositories/admins-repository'
 import { NotAllowedError } from '@/core/errors/not-allowed-error'
 import { BrandsRepository } from '../repositories/brands-repository'
 import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error'
@@ -30,12 +29,10 @@ type CreateProductUseCaseResponse = Either<
 export class CreateProductUseCase {
   constructor(
     private productsRepository: ProductsRepository,
-    private adminsRepository: AdminsRepository,
     private brandsRepository: BrandsRepository,
   ) {}
 
   async execute({
-    adminId,
     name,
     price,
     quantity,
@@ -44,12 +41,6 @@ export class CreateProductUseCase {
     model,
     color,
   }: CreateProductUseCaseRequest): Promise<CreateProductUseCaseResponse> {
-    const admin = this.adminsRepository.findById(adminId)
-
-    if (!admin) {
-      return left(new NotAllowedError())
-    }
-
     const productWithSameSku = await this.productsRepository.findBySKU(sku)
 
     if (productWithSameSku) {

@@ -2,6 +2,7 @@ import { CreateProductUseCase } from '@/domain/store/application/use-cases/creat
 import { ProductAlreadyExistsError } from '@/domain/store/application/use-cases/errors/product-already-exists-error'
 import { CurrentUser } from '@/infra/auth/current-user-decorator'
 import { UserPayload } from '@/infra/auth/jwt.strategy'
+import { Roles } from '@/infra/auth/roles'
 import { ZodValidationPipe } from '@/infra/pipes/zod-validation-pipe'
 import {
   BadRequestException,
@@ -9,7 +10,6 @@ import {
   ConflictException,
   Controller,
   Post,
-  UsePipes,
 } from '@nestjs/common'
 import { z } from 'zod'
 
@@ -31,7 +31,7 @@ export class CreateProductController {
   constructor(private createProduct: CreateProductUseCase) {}
 
   @Post()
-  @UsePipes()
+  @Roles(['ADMIN'])
   async handle(
     @Body(bodyValidationPipe) body: CreateProductBody,
     @CurrentUser() adminUser: UserPayload,

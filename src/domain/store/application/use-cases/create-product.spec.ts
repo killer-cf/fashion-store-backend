@@ -17,7 +17,6 @@ describe('Create Product', () => {
     inMemoryBrandsRepository = new InMemoryBrandsRepository()
     sut = new CreateProductUseCase(
       inMemoryProductsRepository,
-      inMemoryAdminsRepository,
       inMemoryBrandsRepository,
     )
   })

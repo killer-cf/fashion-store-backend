@@ -35,7 +35,7 @@ describe('Create product (e2e)', () => {
     const admin = await adminFactory.makePrismaAdmin({})
     const brand = await brandFactory.makePrismaBrand({ name: 'Xiaomi' })
 
-    const accessToken = jwt.sign({ sub: admin.id.toString() })
+    const accessToken = jwt.sign({ sub: admin.id.toString(), role: 'ADMIN' })
 
     const response = await request(app.getHttpServer())
       .post('/products')
@@ -60,5 +60,36 @@ describe('Create product (e2e)', () => {
 
     expect(product).toBeTruthy()
     expect(product?.brand_id).toEqual(brand.id.toString())
+  })
+
+  test('[POST] /products (Unauthorized)', async () => {
+    const user = await adminFactory.makePrismaAdmin()
+    const brand = await brandFactory.makePrismaBrand()
+
+    const accessToken = jwt.sign({ sub: user.id.toString() })
+
+    const response = await request(app.getHttpServer())
+      .post('/products')
+      .set('Authorization', 'Bearer ' + accessToken)
+      .send({
+        name: 'Novo produto 2',
+        price: 30000,
+        sku: 'adasasooo',
+        brandName: brand.name,
+        model: '9t',
+        color: 'red',
+      })
+
+    expect(response.statusCode).toBe(403)
+
+    const product = await prisma.product.findFirst({
+      where: {
+        name: 'Novo produto 2',
+        price: 30000,
+      },
+    })
+    console.log(product)
+
+    expect(product).toBeFalsy()
   })
 })
