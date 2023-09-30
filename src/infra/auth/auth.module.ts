@@ -6,7 +6,7 @@ import { APP_GUARD } from '@nestjs/core'
 import { JwtAuthGuard } from './jwt-auth.guard'
 import { EnvService } from '../env/env.service'
 import { EnvModule } from '../env/env.module'
-import { RoleGuard } from './role.guard.guard'
+import { RoleGuard } from './role-guard.guard'
 
 @Module({
   imports: [

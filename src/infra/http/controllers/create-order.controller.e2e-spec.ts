@@ -50,7 +50,7 @@ describe('Create order (e2e)', () => {
       }),
     ])
 
-    const accessToken = jwt.sign({ sub: client.id.toString() })
+    const accessToken = jwt.sign({ sub: client.id.toString(), role: 'CLIENT' })
 
     const response = await request(app.getHttpServer())
       .post('/orders')

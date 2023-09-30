@@ -21,12 +21,12 @@ type CreateOrderBody = z.infer<typeof createOrderSchema>
 
 const bodyValidationPipe = new ZodValidationPipe(createOrderSchema)
 
-@Roles('ADMIN')
 @Controller('/orders')
 export class CreateOrderController {
   constructor(private createOrder: CreateOrderUseCase) {}
 
   @Post()
+  @Roles(['CLIENT'])
   async handle(
     @Body(bodyValidationPipe) body: CreateOrderBody,
     @CurrentUser() user: UserPayload,
