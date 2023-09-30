@@ -8,7 +8,6 @@ import { BrandsRepository } from '../repositories/brands-repository'
 import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error'
 
 interface CreateProductUseCaseRequest {
-  adminId: string
   name: string
   price: number
   sku: string

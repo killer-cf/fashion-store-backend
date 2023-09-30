@@ -1,7 +1,5 @@
 import { CreateProductUseCase } from '@/domain/store/application/use-cases/create-product'
 import { ProductAlreadyExistsError } from '@/domain/store/application/use-cases/errors/product-already-exists-error'
-import { CurrentUser } from '@/infra/auth/current-user-decorator'
-import { UserPayload } from '@/infra/auth/jwt.strategy'
 import { Roles } from '@/infra/auth/roles'
 import { ZodValidationPipe } from '@/infra/pipes/zod-validation-pipe'
 import {
@@ -32,16 +30,10 @@ export class CreateProductController {
 
   @Post()
   @Roles(['ADMIN'])
-  async handle(
-    @Body(bodyValidationPipe) body: CreateProductBody,
-    @CurrentUser() adminUser: UserPayload,
-  ) {
+  async handle(@Body(bodyValidationPipe) body: CreateProductBody) {
     const { name, price, sku, brandName, model, color } = body
 
-    const adminId = adminUser.sub
-
     const result = await this.createProduct.execute({
-      adminId,
       name,
       price,
       sku,
