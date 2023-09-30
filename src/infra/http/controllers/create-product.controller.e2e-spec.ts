@@ -6,17 +6,19 @@ import { JwtService } from '@nestjs/jwt'
 import { Test } from '@nestjs/testing'
 import request from 'supertest'
 import { AdminFactory } from 'test/factories/make-admin'
+import { BrandFactory } from 'test/factories/make-brand'
 
 describe('Create product (e2e)', () => {
   let app: INestApplication
   let prisma: PrismaService
   let jwt: JwtService
   let adminFactory: AdminFactory
+  let brandFactory: BrandFactory
 
   beforeAll(async () => {
     const moduleRef = await Test.createTestingModule({
       imports: [AppModule, DatabaseModule],
-      providers: [AdminFactory],
+      providers: [AdminFactory, BrandFactory],
     }).compile()
 
     app = moduleRef.createNestApplication()
@@ -24,12 +26,14 @@ describe('Create product (e2e)', () => {
     jwt = moduleRef.get(JwtService)
     prisma = moduleRef.get(PrismaService)
     adminFactory = moduleRef.get(AdminFactory)
+    brandFactory = moduleRef.get(BrandFactory)
 
     await app.init()
   })
 
   test('[POST] /products', async () => {
     const admin = await adminFactory.makePrismaAdmin({})
+    const brand = await brandFactory.makePrismaBrand({ name: 'Xiaomi' })
 
     const accessToken = jwt.sign({ sub: admin.id.toString() })
 
@@ -40,7 +44,7 @@ describe('Create product (e2e)', () => {
         name: 'Novo produto',
         price: 30000,
         sku: 'adsdasd',
-        brand: 'xiaomi',
+        brandName: 'Xiaomi',
         model: '9t',
         color: 'red',
       })
@@ -55,5 +59,6 @@ describe('Create product (e2e)', () => {
     })
 
     expect(product).toBeTruthy()
+    expect(product?.brand_id).toEqual(brand.id.toString())
   })
 })

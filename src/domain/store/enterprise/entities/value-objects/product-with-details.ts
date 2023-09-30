@@ -2,7 +2,6 @@ import { ValueObject } from '@/core/entities/value-object'
 import { ProductProps } from '../product'
 
 export type ProductWithDetailsProps = ProductProps & {
-  brandId: string
   brandName: string
 }
 

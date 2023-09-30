@@ -5,6 +5,7 @@ import { INestApplication } from '@nestjs/common'
 import { JwtService } from '@nestjs/jwt'
 import { Test } from '@nestjs/testing'
 import request from 'supertest'
+import { BrandFactory } from 'test/factories/make-brand'
 import { ClientFactory } from 'test/factories/make-client'
 import { ProductFactory } from 'test/factories/make-product'
 
@@ -14,11 +15,12 @@ describe('Create order (e2e)', () => {
   let jwt: JwtService
   let clientFactory: ClientFactory
   let productFactory: ProductFactory
+  let brandFactory: BrandFactory
 
   beforeAll(async () => {
     const moduleRef = await Test.createTestingModule({
       imports: [AppModule, DatabaseModule],
-      providers: [ClientFactory, ProductFactory],
+      providers: [ClientFactory, ProductFactory, BrandFactory],
     }).compile()
 
     app = moduleRef.createNestApplication()
@@ -27,6 +29,7 @@ describe('Create order (e2e)', () => {
     prisma = moduleRef.get(PrismaService)
     clientFactory = moduleRef.get(ClientFactory)
     productFactory = moduleRef.get(ProductFactory)
+    brandFactory = moduleRef.get(BrandFactory)
 
     await app.init()
   })
@@ -34,12 +37,16 @@ describe('Create order (e2e)', () => {
   test('[POST] /orders', async () => {
     const client = await clientFactory.makePrismaClient()
 
+    const brand = await brandFactory.makePrismaBrand()
+
     const [product1, product2] = await Promise.all([
       productFactory.makePrismaProduct({
         price: 30000,
+        brandId: brand.id,
       }),
       productFactory.makePrismaProduct({
         price: 90000,
+        brandId: brand.id,
       }),
     ])
 

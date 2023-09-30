@@ -5,23 +5,22 @@ import { ProductAlreadyExistsError } from './errors/product-already-exists-error
 import { Injectable } from '@nestjs/common'
 import { AdminsRepository } from '../repositories/admins-repository'
 import { NotAllowedError } from '@/core/errors/not-allowed-error'
-import { Brand } from '../../enterprise/entities/brand'
 import { BrandsRepository } from '../repositories/brands-repository'
-import { BrandAlreadyExistsError } from './errors/brand-already-exists-error'
+import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error'
 
 interface CreateProductUseCaseRequest {
   adminId: string
   name: string
   price: number
   sku: string
-  brand: string
+  brandName: string
   model: string
   color: string
   quantity?: number
 }
 
 type CreateProductUseCaseResponse = Either<
-  ProductAlreadyExistsError | NotAllowedError | BrandAlreadyExistsError,
+  ProductAlreadyExistsError | NotAllowedError | ResourceNotFoundError,
   {
     product: Product
   }
@@ -41,7 +40,7 @@ export class CreateProductUseCase {
     price,
     quantity,
     sku,
-    brand,
+    brandName,
     model,
     color,
   }: CreateProductUseCaseRequest): Promise<CreateProductUseCaseResponse> {
@@ -57,10 +56,10 @@ export class CreateProductUseCase {
       return left(new ProductAlreadyExistsError())
     }
 
-    const brandOnRepository = await this.brandsRepository.findByName(brand)
+    const brandOnRepository = await this.brandsRepository.findByName(brandName)
 
     if (!brandOnRepository) {
-      return left(new BrandAlreadyExistsError())
+      return left(new ResourceNotFoundError())
     }
 
     const product = Product.create({
@@ -70,7 +69,7 @@ export class CreateProductUseCase {
       quantity,
       model,
       color,
-      brand: Brand.create(brandOnRepository, brandOnRepository.id),
+      brandId: brandOnRepository.id,
     })
 
     await this.productsRepository.create(product)

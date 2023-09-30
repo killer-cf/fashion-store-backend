@@ -33,7 +33,7 @@ describe('Create Product', () => {
 
     const result = await sut.execute({
       adminId: admin.id.toString(),
-      brand: 'Xiaomi',
+      brandName: 'Xiaomi',
       color: 'green',
       price: 200000,
       model: '14T',
@@ -44,6 +44,7 @@ describe('Create Product', () => {
     expect(result.isRight()).toBe(true)
     if (result.isRight()) {
       expect(inMemoryProductsRepository.items[0]).toEqual(result.value?.product)
+      expect(inMemoryProductsRepository.items[0].brandId).toEqual(brand.id)
     }
   })
 })

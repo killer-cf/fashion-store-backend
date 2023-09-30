@@ -17,7 +17,7 @@ const createProductSchema = z.object({
   name: z.string(),
   price: z.number(),
   sku: z.string(),
-  brand: z.string(),
+  brandName: z.string(),
   model: z.string(),
   color: z.string(),
 })
@@ -36,7 +36,7 @@ export class CreateProductController {
     @Body(bodyValidationPipe) body: CreateProductBody,
     @CurrentUser() adminUser: UserPayload,
   ) {
-    const { name, price, sku, brand, model, color } = body
+    const { name, price, sku, brandName, model, color } = body
 
     const adminId = adminUser.sub
 
@@ -45,7 +45,7 @@ export class CreateProductController {
       name,
       price,
       sku,
-      brand,
+      brandName,
       model,
       color,
     })

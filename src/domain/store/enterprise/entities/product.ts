@@ -9,6 +9,7 @@ export interface ProductProps {
   sku: string
   model: string
   color: string
+  brandId: UniqueEntityID
   createdAt: Date
   updatedAt?: Date | null
 }
@@ -46,6 +47,10 @@ export class Product extends Entity<ProductProps> {
 
   get color() {
     return this.props.color
+  }
+
+  get brandId() {
+    return this.props.brandId
   }
 
   get createdAt() {
