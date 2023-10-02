@@ -1,8 +1,11 @@
+import { ProductImagesRepository } from '@/domain/store/application/repositories/product-images-repository'
 import { ProductsRepository } from '@/domain/store/application/repositories/products-repository'
 import { Product } from '@/domain/store/enterprise/entities/product'
 
 export class InMemoryProductsRepository implements ProductsRepository {
   public items: Product[] = []
+
+  constructor(private productImagesRepository: ProductImagesRepository) {}
 
   async findById(id: string): Promise<Product | null> {
     const product = this.items.find((product) => product.id.toString() === id)
@@ -32,6 +35,8 @@ export class InMemoryProductsRepository implements ProductsRepository {
 
   async create(product: Product): Promise<void> {
     this.items.push(product)
+
+    this.productImagesRepository.createMany(product.images.getItems())
   }
 
   async save(product: Product): Promise<void> {
