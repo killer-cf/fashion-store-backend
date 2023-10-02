@@ -3,15 +3,20 @@ import { CreateOrderUseCase } from './create-order'
 import { InMemoryProductsRepository } from 'test/repositories/in-memory-products-repository'
 import { makeProduct } from 'test/factories/make-product'
 import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error'
+import { InMemoryProductImagesRepository } from 'test/repositories/in-memory-images-repository'
 
 describe('Create Order', () => {
+  let inMemoryProductImagesRepository: InMemoryProductImagesRepository
   let inMemoryOrdersRepository: InMemoryOrdersRepository
   let inMemoryProductsRepository: InMemoryProductsRepository
   let sut: CreateOrderUseCase
 
   beforeEach(() => {
     inMemoryOrdersRepository = new InMemoryOrdersRepository()
-    inMemoryProductsRepository = new InMemoryProductsRepository()
+    inMemoryProductImagesRepository = new InMemoryProductImagesRepository()
+    inMemoryProductsRepository = new InMemoryProductsRepository(
+      inMemoryProductImagesRepository,
+    )
     sut = new CreateOrderUseCase(
       inMemoryOrdersRepository,
       inMemoryProductsRepository,
