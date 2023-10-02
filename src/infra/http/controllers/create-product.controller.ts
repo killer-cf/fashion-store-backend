@@ -18,6 +18,7 @@ const createProductSchema = z.object({
   brandName: z.string(),
   model: z.string(),
   color: z.string(),
+  imageIds: z.array(z.string()),
 })
 
 type CreateProductBody = z.infer<typeof createProductSchema>
@@ -31,7 +32,7 @@ export class CreateProductController {
   @Post()
   @Roles(['ADMIN'])
   async handle(@Body(bodyValidationPipe) body: CreateProductBody) {
-    const { name, price, sku, brandName, model, color } = body
+    const { name, price, sku, brandName, model, color, imageIds } = body
 
     const result = await this.createProduct.execute({
       name,
@@ -40,6 +41,7 @@ export class CreateProductController {
       brandName,
       model,
       color,
+      imageIds,
     })
 
     if (result.isLeft()) {
