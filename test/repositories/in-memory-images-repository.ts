@@ -1,36 +1,10 @@
-import { ProductImagesRepository } from '@/domain/store/application/repositories/product-images-repository'
-import { ProductImage } from '@/domain/store/enterprise/entities/product-image'
+import { ImagesRepository } from '@/domain/store/application/repositories/images-repository'
+import { Image } from '@/domain/store/enterprise/entities/image'
 
-export class InMemoryProductImagesRepository
-  implements ProductImagesRepository
-{
-  public items: ProductImage[] = []
+export class InMemoryImagesRepository implements ImagesRepository {
+  public items: Image[] = []
 
-  async findManyByProductId(productId: string): Promise<ProductImage[]> {
-    const productImages = this.items.filter(
-      (item) => item.productId.toString() === productId,
-    )
-
-    return productImages
-  }
-
-  async deleteManyByProductId(productId: string): Promise<void> {
-    const productImages = this.items.filter(
-      (item) => item.productId.toString() !== productId,
-    )
-
-    this.items = productImages
-  }
-
-  async createMany(images: ProductImage[]): Promise<void> {
-    this.items.push(...images)
-  }
-
-  async deleteMany(images: ProductImage[]): Promise<void> {
-    const productImages = this.items.filter((item) => {
-      return !images.some((image) => image.equals(item))
-    })
-
-    this.items = productImages
+  async create(image: Image): Promise<void> {
+    this.items.push(image)
   }
 }

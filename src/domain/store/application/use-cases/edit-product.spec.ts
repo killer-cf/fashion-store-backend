@@ -4,9 +4,9 @@ import { InMemoryAdminsRepository } from 'test/repositories/in-memory-admins-rep
 import { makeAdmin } from 'test/factories/make-admin'
 import { makeProduct } from 'test/factories/make-product'
 import { NotAllowedError } from '@/core/errors/not-allowed-error'
-import { InMemoryProductImagesRepository } from 'test/repositories/in-memory-images-repository'
 import { makeProductImage } from 'test/factories/make-product-image'
 import { UniqueEntityID } from '@/core/entities/unique-entity-id'
+import { InMemoryProductImagesRepository } from 'test/repositories/in-memory-product-images-repository'
 
 describe('Edit product', () => {
   let inMemoryProductImagesRepository: InMemoryProductImagesRepository

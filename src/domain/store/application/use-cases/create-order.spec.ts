@@ -3,7 +3,7 @@ import { CreateOrderUseCase } from './create-order'
 import { InMemoryProductsRepository } from 'test/repositories/in-memory-products-repository'
 import { makeProduct } from 'test/factories/make-product'
 import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error'
-import { InMemoryProductImagesRepository } from 'test/repositories/in-memory-images-repository'
+import { InMemoryProductImagesRepository } from 'test/repositories/in-memory-product-images-repository'
 
 describe('Create Order', () => {
   let inMemoryProductImagesRepository: InMemoryProductImagesRepository
