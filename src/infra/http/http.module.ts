@@ -11,15 +11,19 @@ import { AuthenticateClientUseCase } from '@/domain/store/application/use-cases/
 import { AuthenticateController } from './controllers/authenticate.controller'
 import { CreateOrderController } from './controllers/create-order.controller'
 import { CreateOrderUseCase } from '@/domain/store/application/use-cases/create-order'
+import { UploadImageController } from './controllers/upload-image.controller'
+import { UploadAndCreateImageUseCase } from '@/domain/store/application/use-cases/upload-and-create-image'
+import { StorageModule } from '../storage/storage.module'
 
 @Module({
-  imports: [DatabaseModule, CryptographyModule],
+  imports: [DatabaseModule, CryptographyModule, StorageModule],
   controllers: [
     CreateProductController,
     ListProductsController,
     CreateAccountController,
     AuthenticateController,
     CreateOrderController,
+    UploadImageController,
   ],
   providers: [
     CreateProductUseCase,
@@ -27,6 +31,7 @@ import { CreateOrderUseCase } from '@/domain/store/application/use-cases/create-
     RegisterClientUseCase,
     AuthenticateClientUseCase,
     CreateOrderUseCase,
+    UploadAndCreateImageUseCase,
   ],
 })
 export class HttpModule {}
