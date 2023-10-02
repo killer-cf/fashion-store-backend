@@ -43,5 +43,8 @@ export class InMemoryProductsRepository implements ProductsRepository {
     const productIndex = this.items.findIndex((item) => item.id === product.id)
 
     this.items[productIndex] = product
+
+    this.productImagesRepository.deleteMany(product.images.getRemovedItems())
+    this.productImagesRepository.createMany(product.images.getNewItems())
   }
 }
