@@ -6,6 +6,9 @@ import { Injectable } from '@nestjs/common'
 import { NotAllowedError } from '@/core/errors/not-allowed-error'
 import { BrandsRepository } from '../repositories/brands-repository'
 import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error'
+import { ProductImage } from '../../enterprise/entities/product-image'
+import { UniqueEntityID } from '@/core/entities/unique-entity-id'
+import { ProductImageList } from '../../enterprise/entities/product-image-list'
 
 interface CreateProductUseCaseRequest {
   name: string
@@ -15,6 +18,7 @@ interface CreateProductUseCaseRequest {
   model: string
   color: string
   quantity?: number
+  imageIds: string[]
 }
 
 type CreateProductUseCaseResponse = Either<
@@ -39,6 +43,7 @@ export class CreateProductUseCase {
     brandName,
     model,
     color,
+    imageIds,
   }: CreateProductUseCaseRequest): Promise<CreateProductUseCaseResponse> {
     const productWithSameSku = await this.productsRepository.findBySKU(sku)
 
@@ -61,6 +66,15 @@ export class CreateProductUseCase {
       color,
       brandId: brandOnRepository.id,
     })
+
+    const productImages = imageIds.map((imageId) => {
+      return ProductImage.create({
+        productId: product.id,
+        imageId: new UniqueEntityID(imageId),
+      })
+    })
+
+    product.images = new ProductImageList(productImages)
 
     await this.productsRepository.create(product)
 

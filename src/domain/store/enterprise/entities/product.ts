@@ -1,6 +1,7 @@
 import { Entity } from '@/core/entities/entity'
 import { UniqueEntityID } from '@/core/entities/unique-entity-id'
 import { Optional } from '@/core/types/optional'
+import { ProductImageList } from './product-image-list'
 
 export interface ProductProps {
   name: string
@@ -9,6 +10,7 @@ export interface ProductProps {
   sku: string
   model: string
   color: string
+  images: ProductImageList
   brandId: UniqueEntityID
   createdAt: Date
   updatedAt?: Date | null
@@ -49,6 +51,15 @@ export class Product extends Entity<ProductProps> {
     return this.props.color
   }
 
+  get images() {
+    return this.props.images
+  }
+
+  set images(images: ProductImageList) {
+    this.props.images = images
+    this.touch()
+  }
+
   get brandId() {
     return this.props.brandId
   }
@@ -74,13 +85,14 @@ export class Product extends Entity<ProductProps> {
   }
 
   static create(
-    props: Optional<ProductProps, 'quantity' | 'createdAt'>,
+    props: Optional<ProductProps, 'quantity' | 'createdAt' | 'images'>,
     id?: UniqueEntityID,
   ) {
     const product = new Product(
       {
         ...props,
         quantity: props.quantity ?? 0,
+        images: props.images ?? new ProductImageList(),
         createdAt: props.createdAt ?? new Date(),
       },
       id,
