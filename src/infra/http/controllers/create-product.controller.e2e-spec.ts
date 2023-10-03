@@ -47,6 +47,7 @@ describe('Create product (e2e)', () => {
         brandName: 'Xiaomi',
         model: '9t',
         color: 'red',
+        imageIds: [],
       })
 
     expect(response.statusCode).toBe(201)
@@ -78,6 +79,7 @@ describe('Create product (e2e)', () => {
         brandName: brand.name,
         model: '9t',
         color: 'red',
+        imageIds: [],
       })
 
     expect(response.statusCode).toBe(403)
