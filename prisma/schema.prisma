@@ -20,6 +20,7 @@ model User {
   phone    String?
   role     UserRole @default(CLIENT)
   Order    Order[]
+  image    Image?
 
   @@map("users")
 }
@@ -37,6 +38,7 @@ model Product {
 
   order_items OrderItem[]
   brand       Brand       @relation(fields: [brand_id], references: [id])
+  images      Image[]
 
   @@map("products")
 }
@@ -75,4 +77,17 @@ model Brand {
   products Product[]
 
   @@map("brand")
+}
+
+model Image {
+  id         String  @id @default(uuid())
+  title      String
+  url        String
+  product_id String?
+  user_id    String? @unique
+
+  user    User?    @relation(fields: [user_id], references: [id])
+  product Product? @relation(fields: [product_id], references: [id])
+
+  @@map("images")
 }
