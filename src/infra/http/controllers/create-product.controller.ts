@@ -18,7 +18,7 @@ const createProductSchema = z.object({
   brandName: z.string(),
   model: z.string(),
   color: z.string(),
-  imageIds: z.array(z.string()),
+  imageIds: z.array(z.string()).min(1),
 })
 
 type CreateProductBody = z.infer<typeof createProductSchema>

@@ -7,6 +7,7 @@ import { Test } from '@nestjs/testing'
 import request from 'supertest'
 import { AdminFactory } from 'test/factories/make-admin'
 import { BrandFactory } from 'test/factories/make-brand'
+import { ImageFactory } from 'test/factories/make-image'
 
 describe('Create product (e2e)', () => {
   let app: INestApplication
@@ -14,11 +15,12 @@ describe('Create product (e2e)', () => {
   let jwt: JwtService
   let adminFactory: AdminFactory
   let brandFactory: BrandFactory
+  let imageFactory: ImageFactory
 
   beforeAll(async () => {
     const moduleRef = await Test.createTestingModule({
       imports: [AppModule, DatabaseModule],
-      providers: [AdminFactory, BrandFactory],
+      providers: [AdminFactory, BrandFactory, ImageFactory],
     }).compile()
 
     app = moduleRef.createNestApplication()
@@ -27,6 +29,7 @@ describe('Create product (e2e)', () => {
     prisma = moduleRef.get(PrismaService)
     adminFactory = moduleRef.get(AdminFactory)
     brandFactory = moduleRef.get(BrandFactory)
+    imageFactory = moduleRef.get(ImageFactory)
 
     await app.init()
   })
@@ -36,6 +39,8 @@ describe('Create product (e2e)', () => {
     const brand = await brandFactory.makePrismaBrand({ name: 'Xiaomi' })
 
     const accessToken = jwt.sign({ sub: admin.id.toString(), role: 'ADMIN' })
+
+    const image = await imageFactory.makePrismaImage()
 
     const response = await request(app.getHttpServer())
       .post('/products')
@@ -47,7 +52,7 @@ describe('Create product (e2e)', () => {
         brandName: 'Xiaomi',
         model: '9t',
         color: 'red',
-        imageIds: [],
+        imageIds: [image.id.toString()],
       })
 
     expect(response.statusCode).toBe(201)
@@ -61,6 +66,14 @@ describe('Create product (e2e)', () => {
 
     expect(product).toBeTruthy()
     expect(product?.brand_id).toEqual(brand.id.toString())
+
+    const imageOnDataBase = await prisma.image.findMany({
+      where: {
+        product_id: product?.id,
+      },
+    })
+
+    expect(imageOnDataBase).toHaveLength(1)
   })
 
   test('[POST] /products (Unauthorized)', async () => {
