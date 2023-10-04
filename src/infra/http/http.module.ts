@@ -14,6 +14,8 @@ import { CreateOrderUseCase } from '@/domain/store/application/use-cases/create-
 import { UploadImageController } from './controllers/upload-image.controller'
 import { UploadAndCreateImageUseCase } from '@/domain/store/application/use-cases/upload-and-create-image'
 import { StorageModule } from '../storage/storage.module'
+import { CreateBrandController } from './controllers/create-brand.controller'
+import { CreateBrandUseCase } from '@/domain/store/application/use-cases/create-brand'
 
 @Module({
   imports: [DatabaseModule, CryptographyModule, StorageModule],
@@ -24,6 +26,7 @@ import { StorageModule } from '../storage/storage.module'
     AuthenticateController,
     CreateOrderController,
     UploadImageController,
+    CreateBrandController,
   ],
   providers: [
     CreateProductUseCase,
@@ -32,6 +35,7 @@ import { StorageModule } from '../storage/storage.module'
     AuthenticateClientUseCase,
     CreateOrderUseCase,
     UploadAndCreateImageUseCase,
+    CreateBrandUseCase,
   ],
 })
 export class HttpModule {}

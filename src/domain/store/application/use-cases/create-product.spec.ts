@@ -3,7 +3,7 @@ import { CreateProductUseCase } from './create-product'
 import { InMemoryBrandsRepository } from 'test/repositories/in-memory-brands-repository'
 import { Brand } from '../../enterprise/entities/brand'
 import { UniqueEntityID } from '@/core/entities/unique-entity-id'
-import { InMemoryProductImagesRepository } from 'test/repositories/in-memory-images-repository'
+import { InMemoryProductImagesRepository } from 'test/repositories/in-memory-product-images-repository'
 
 describe('Create Product', () => {
   let inMemoryProductImagesRepository: InMemoryProductImagesRepository
