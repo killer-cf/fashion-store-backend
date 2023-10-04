@@ -7,7 +7,6 @@ import { PrismaBrandMapper } from '../mappers/prisma-brand-mapper'
 @Injectable()
 export class PrismaBrandsRepository implements BrandsRepository {
   constructor(private prisma: PrismaService) {}
-
   async findByName(name: string): Promise<Brand | null> {
     const brand = await this.prisma.brand.findUnique({
       where: {
@@ -20,6 +19,18 @@ export class PrismaBrandsRepository implements BrandsRepository {
     }
 
     return PrismaBrandMapper.toDomain(brand)
+  }
+
+  async listAll(page: number): Promise<Brand[]> {
+    const brands = await this.prisma.brand.findMany({
+      orderBy: {
+        name: 'asc',
+      },
+      take: 20,
+      skip: (page - 1) * 20,
+    })
+
+    return brands.map(PrismaBrandMapper.toDomain)
   }
 
   async create(brand: Brand): Promise<void> {
