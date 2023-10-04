@@ -1,13 +1,18 @@
 import { InMemoryProductsRepository } from 'test/repositories/in-memory-products-repository'
 import { ListProductsUseCase } from './list-products'
 import { makeProduct } from 'test/factories/make-product'
+import { InMemoryProductImagesRepository } from 'test/repositories/in-memory-product-images-repository'
 
 describe('List Products', () => {
+  let inMemoryProductImagesRepository: InMemoryProductImagesRepository
   let inMemoryProductsRepository: InMemoryProductsRepository
   let sut: ListProductsUseCase
 
   beforeEach(() => {
-    inMemoryProductsRepository = new InMemoryProductsRepository()
+    inMemoryProductImagesRepository = new InMemoryProductImagesRepository()
+    inMemoryProductsRepository = new InMemoryProductsRepository(
+      inMemoryProductImagesRepository,
+    )
     sut = new ListProductsUseCase(inMemoryProductsRepository)
   })
 
