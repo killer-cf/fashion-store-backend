@@ -14,10 +14,6 @@ export class ProductWithDetails extends ValueObject<ProductWithDetailsProps> {
     return this.props.price
   }
 
-  get quantity() {
-    return this.props.quantity
-  }
-
   get sku() {
     return this.props.sku
   }
@@ -26,8 +22,12 @@ export class ProductWithDetails extends ValueObject<ProductWithDetailsProps> {
     return this.props.model
   }
 
-  get color() {
-    return this.props.color
+  get colors() {
+    return this.props.colors
+  }
+
+  get description() {
+    return this.props.description
   }
 
   get createdAt() {
