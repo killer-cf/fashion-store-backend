@@ -5,10 +5,11 @@ export class ProductPresenter {
     return {
       id: product.id.toString(),
       name: product.name,
+      description: product.description,
       price: product.price,
       brandId: product.brandId,
       model: product.model,
-      color: product.color,
+      colors: product.colors,
     }
   }
 }
