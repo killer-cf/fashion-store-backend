@@ -16,8 +16,9 @@ export function makeProduct(
   const product = Product.create(
     {
       name: faker.vehicle.vehicle(),
-      brand: faker.company.name(),
-      color: faker.color.human(),
+      brandId: new UniqueEntityID(),
+      colors: Array.from(faker.color.human()),
+      description: faker.lorem.paragraph(),
       model: faker.vehicle.manufacturer(),
       price: faker.number.int(1000),
       sku: randomUUID(),

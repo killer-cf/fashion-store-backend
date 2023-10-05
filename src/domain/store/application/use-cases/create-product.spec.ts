@@ -30,7 +30,8 @@ describe('Create Product', () => {
 
     const result = await sut.execute({
       brandName: 'Xiaomi',
-      color: 'green',
+      description: 'the best smartphone',
+      colors: ['green', 'black'],
       price: 200000,
       model: '14T',
       name: 'Xiaomi 14T',
@@ -56,7 +57,8 @@ describe('Create Product', () => {
 
     const result = await sut.execute({
       brandName: brand.name,
-      color: 'green',
+      description: 'the best smartphone',
+      colors: ['green', 'black'],
       price: 200000,
       model: '14T',
       name: 'Xiaomi 14T',

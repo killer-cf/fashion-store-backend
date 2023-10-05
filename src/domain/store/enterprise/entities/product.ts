@@ -5,11 +5,11 @@ import { ProductImageList } from './product-image-list'
 
 export interface ProductProps {
   name: string
+  description: string
   price: number
-  quantity: number
   sku: string
   model: string
-  color: string
+  colors: string[]
   images: ProductImageList
   brandId: UniqueEntityID
   createdAt: Date
@@ -26,6 +26,15 @@ export class Product extends Entity<ProductProps> {
     this.touch()
   }
 
+  get description() {
+    return this.props.description
+  }
+
+  set description(description: string) {
+    this.props.description = description
+    this.touch()
+  }
+
   get price() {
     return this.props.price
   }
@@ -33,10 +42,6 @@ export class Product extends Entity<ProductProps> {
   set price(price: number) {
     this.props.price = price
     this.touch()
-  }
-
-  get quantity() {
-    return this.props.quantity
   }
 
   get sku() {
@@ -47,8 +52,13 @@ export class Product extends Entity<ProductProps> {
     return this.props.model
   }
 
-  get color() {
-    return this.props.color
+  get colors() {
+    return this.props.colors
+  }
+
+  set colors(colors: string[]) {
+    this.props.colors = colors
+    this.touch()
   }
 
   get images() {
@@ -76,22 +86,13 @@ export class Product extends Entity<ProductProps> {
     this.props.updatedAt = new Date()
   }
 
-  increaseStock(quantity: number) {
-    this.props.quantity += quantity
-  }
-
-  decreaseStock(quantity: number) {
-    this.props.quantity -= quantity
-  }
-
   static create(
-    props: Optional<ProductProps, 'quantity' | 'createdAt' | 'images'>,
+    props: Optional<ProductProps, 'createdAt' | 'images'>,
     id?: UniqueEntityID,
   ) {
     const product = new Product(
       {
         ...props,
-        quantity: props.quantity ?? 0,
         images: props.images ?? new ProductImageList(),
         createdAt: props.createdAt ?? new Date(),
       },

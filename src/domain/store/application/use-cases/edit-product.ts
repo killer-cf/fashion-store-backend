@@ -13,6 +13,8 @@ interface EditProductUseCaseRequest {
   adminId: string
   productId: string
   name: string
+  description: string
+  colors: string[]
   price: number
   imageIds: string[]
 }
@@ -35,6 +37,8 @@ export class EditProductUseCase {
     adminId,
     productId,
     name,
+    description,
+    colors,
     price,
     imageIds,
   }: EditProductUseCaseRequest): Promise<EditProductUseCaseResponse> {
@@ -68,6 +72,8 @@ export class EditProductUseCase {
 
     product.images = productImageList
     product.name = name
+    product.description = description
+    product.colors = colors
     product.price = price
 
     await this.productsRepository.save(product)

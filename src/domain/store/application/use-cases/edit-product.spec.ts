@@ -49,6 +49,8 @@ describe('Edit product', () => {
       adminId: admin.id.toString(),
       productId: product.id.toString(),
       name: 'Novo nome do produto',
+      description: 'nova descrição do produto',
+      colors: ['green', 'blue'],
       price: 1200,
       imageIds: ['1', '3'],
     })
@@ -59,6 +61,13 @@ describe('Edit product', () => {
         'Novo nome do produto',
       )
       expect(inMemoryProductsRepository.items[0].price).toEqual(1200)
+      expect(inMemoryProductsRepository.items[0].colors).toEqual([
+        'green',
+        'blue',
+      ])
+      expect(inMemoryProductsRepository.items[0].description).toEqual(
+        'nova descrição do produto',
+      )
       expect(
         inMemoryProductsRepository.items[0].images.currentItems,
       ).toHaveLength(2)
@@ -80,6 +89,8 @@ describe('Edit product', () => {
       adminId: 'id-nao-admin',
       productId: product.id.toString(),
       name: 'Novo nome do produto',
+      description: 'nova descrição do produto',
+      colors: ['green', 'blue'],
       price: 1200,
       imageIds: ['1', '2'],
     })
@@ -110,6 +121,8 @@ describe('Edit product', () => {
       adminId: admin.id.toString(),
       productId: product.id.toString(),
       name: 'Novo nome do produto',
+      description: 'nova descrição do produto',
+      colors: ['green', 'blue'],
       price: 1200,
       imageIds: ['1', '3'],
     })

@@ -12,11 +12,12 @@ import { ProductImageList } from '../../enterprise/entities/product-image-list'
 
 interface CreateProductUseCaseRequest {
   name: string
+  description: string
   price: number
   sku: string
   brandName: string
   model: string
-  color: string
+  colors: string[]
   quantity?: number
   imageIds: string[]
 }
@@ -37,12 +38,12 @@ export class CreateProductUseCase {
 
   async execute({
     name,
+    description,
     price,
-    quantity,
     sku,
     brandName,
     model,
-    color,
+    colors,
     imageIds,
   }: CreateProductUseCaseRequest): Promise<CreateProductUseCaseResponse> {
     const productWithSameSku = await this.productsRepository.findBySKU(sku)
@@ -59,11 +60,11 @@ export class CreateProductUseCase {
 
     const product = Product.create({
       name,
+      description,
       price,
       sku,
-      quantity,
       model,
-      color,
+      colors,
       brandId: brandOnRepository.id,
     })
 
