@@ -13,11 +13,12 @@ import { z } from 'zod'
 
 const createProductSchema = z.object({
   name: z.string(),
+  description: z.string(),
   price: z.number(),
   sku: z.string(),
   brandName: z.string(),
   model: z.string(),
-  color: z.string(),
+  colors: z.array(z.string()).min(1),
   imageIds: z.array(z.string()).min(1),
 })
 
@@ -32,15 +33,25 @@ export class CreateProductController {
   @Post()
   @Roles(['ADMIN'])
   async handle(@Body(bodyValidationPipe) body: CreateProductBody) {
-    const { name, price, sku, brandName, model, color, imageIds } = body
-
-    const result = await this.createProduct.execute({
+    const {
       name,
+      description,
       price,
       sku,
       brandName,
       model,
-      color,
+      colors,
+      imageIds,
+    } = body
+
+    const result = await this.createProduct.execute({
+      name,
+      description,
+      price,
+      sku,
+      brandName,
+      model,
+      colors,
       imageIds,
     })
 

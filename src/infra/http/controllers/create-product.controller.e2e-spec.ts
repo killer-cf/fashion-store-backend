@@ -51,7 +51,8 @@ describe('Create product (e2e)', () => {
         sku: 'adsdasd',
         brandName: 'Xiaomi',
         model: '9t',
-        color: 'red',
+        description: 'Descrição do produto',
+        colors: ['red'],
         imageIds: [image.id.toString()],
       })
 
@@ -91,7 +92,8 @@ describe('Create product (e2e)', () => {
         sku: 'adasasooo',
         brandName: brand.name,
         model: '9t',
-        color: 'red',
+        description: 'Descrição do produto',
+        colors: ['red'],
         imageIds: [],
       })
 
