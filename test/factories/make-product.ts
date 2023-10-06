@@ -3,6 +3,7 @@ import {
   Product,
   ProductProps,
 } from '@/domain/store/enterprise/entities/product'
+import { ProductImageList } from '@/domain/store/enterprise/entities/product-image-list'
 import { ProductStatus } from '@/domain/store/enterprise/entities/value-objects/product-status'
 import { PrismaProductMapper } from '@/infra/database/prisma/mappers/prisma-product-mapper'
 import { PrismaService } from '@/infra/database/prisma/prisma.service'
@@ -24,6 +25,7 @@ export function makeProduct(
       model: faker.vehicle.manufacturer(),
       price: faker.number.int(1000),
       sku: randomUUID(),
+      images: new ProductImageList(),
       ...override,
     },
     id,
