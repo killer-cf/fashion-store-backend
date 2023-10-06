@@ -2,6 +2,7 @@ import { Entity } from '@/core/entities/entity'
 import { UniqueEntityID } from '@/core/entities/unique-entity-id'
 import { Optional } from '@/core/types/optional'
 import { ProductImageList } from './product-image-list'
+import { ProductStatus, Status } from './value-objects/product-status'
 
 export interface ProductProps {
   name: string
@@ -10,6 +11,7 @@ export interface ProductProps {
   sku: string
   model: string
   colors: string[]
+  status: ProductStatus
   images: ProductImageList
   brandId: UniqueEntityID
   createdAt: Date
@@ -61,6 +63,10 @@ export class Product extends Entity<ProductProps> {
     this.touch()
   }
 
+  get status() {
+    return this.props.status
+  }
+
   get images() {
     return this.props.images
   }
@@ -80,6 +86,22 @@ export class Product extends Entity<ProductProps> {
 
   get updatedAt() {
     return this.props.updatedAt
+  }
+
+  public activate() {
+    this.props.status = new ProductStatus(Status.ACTIVE)
+  }
+
+  public disable() {
+    this.props.status = new ProductStatus(Status.DISABLED)
+  }
+
+  public isActive(): boolean {
+    return this.props.status.getValue() === Status.ACTIVE
+  }
+
+  public isDisabled(): boolean {
+    return this.props.status.getValue() === Status.DISABLED
   }
 
   private touch() {

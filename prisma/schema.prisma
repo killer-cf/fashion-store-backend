@@ -12,6 +12,11 @@ enum UserRole {
   ADMIN
 }
 
+enum ProductStatus {
+  ACTIVE
+  DISABLED
+}
+
 model User {
   id       String   @id @default(uuid())
   name     String
@@ -26,15 +31,16 @@ model User {
 }
 
 model Product {
-  id          String    @id @default(uuid())
-  sku         String    @unique
+  id          String        @id @default(uuid())
+  sku         String        @unique
   name        String
   description String
   price       Int
   model       String
   colors      String[]
-  createdAt   DateTime  @default(now()) @map("created_at")
-  updatedAt   DateTime? @updatedAt @map("updated_at")
+  status      ProductStatus
+  createdAt   DateTime      @default(now()) @map("created_at")
+  updatedAt   DateTime?     @updatedAt @map("updated_at")
   brand_id    String
 
   order_items OrderItem[]

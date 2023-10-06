@@ -3,6 +3,7 @@ import {
   Product,
   ProductProps,
 } from '@/domain/store/enterprise/entities/product'
+import { ProductStatus } from '@/domain/store/enterprise/entities/value-objects/product-status'
 import { PrismaProductMapper } from '@/infra/database/prisma/mappers/prisma-product-mapper'
 import { PrismaService } from '@/infra/database/prisma/prisma.service'
 import { faker } from '@faker-js/faker'
@@ -18,6 +19,7 @@ export function makeProduct(
       name: faker.vehicle.vehicle(),
       brandId: new UniqueEntityID(),
       colors: Array.from(faker.color.human()),
+      status: ProductStatus.create('ACTIVE'),
       description: faker.lorem.paragraph(),
       model: faker.vehicle.manufacturer(),
       price: faker.number.int(1000),

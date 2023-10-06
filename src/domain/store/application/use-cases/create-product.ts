@@ -9,6 +9,7 @@ import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error'
 import { ProductImage } from '../../enterprise/entities/product-image'
 import { UniqueEntityID } from '@/core/entities/unique-entity-id'
 import { ProductImageList } from '../../enterprise/entities/product-image-list'
+import { ProductStatus } from '../../enterprise/entities/value-objects/product-status'
 
 interface CreateProductUseCaseRequest {
   name: string
@@ -18,7 +19,7 @@ interface CreateProductUseCaseRequest {
   brandName: string
   model: string
   colors: string[]
-  quantity?: number
+  status: 'ACTIVE' | 'DISABLED'
   imageIds: string[]
 }
 
@@ -44,6 +45,7 @@ export class CreateProductUseCase {
     brandName,
     model,
     colors,
+    status,
     imageIds,
   }: CreateProductUseCaseRequest): Promise<CreateProductUseCaseResponse> {
     const productWithSameSku = await this.productsRepository.findBySKU(sku)
@@ -65,6 +67,7 @@ export class CreateProductUseCase {
       sku,
       model,
       colors,
+      status: ProductStatus.create(status),
       brandId: brandOnRepository.id,
     })
 

@@ -1,5 +1,6 @@
 import { UniqueEntityID } from '@/core/entities/unique-entity-id'
 import { Product } from '@/domain/store/enterprise/entities/product'
+import { ProductStatus } from '@/domain/store/enterprise/entities/value-objects/product-status'
 import { Prisma, Product as PrismaProduct } from '@prisma/client'
 
 export class PrismaProductMapper {
@@ -8,6 +9,7 @@ export class PrismaProductMapper {
       {
         name: raw.name,
         sku: raw.sku,
+        status: ProductStatus.create(raw.status),
         model: raw.model,
         colors: raw.colors,
         description: raw.description,
@@ -25,6 +27,7 @@ export class PrismaProductMapper {
       id: product.id.toString(),
       name: product.name,
       sku: product.sku,
+      status: product.status.getValue(),
       model: product.model,
       brand_id: product.brandId.toString(),
       colors: product.colors,
