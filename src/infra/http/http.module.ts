@@ -20,6 +20,8 @@ import { ListBrandsController } from './controllers/list-brands.controller'
 import { ListBrandsUseCase } from '@/domain/store/application/use-cases/list-brands'
 import { ActivateProductController } from './controllers/activate-product.controller'
 import { ActivateProductUseCase } from '@/domain/store/application/use-cases/activate-product'
+import { DisableProductController } from './controllers/disable-product.controller'
+import { DisableProductUseCase } from '@/domain/store/application/use-cases/disable-product'
 
 @Module({
   imports: [DatabaseModule, CryptographyModule, StorageModule],
@@ -33,6 +35,7 @@ import { ActivateProductUseCase } from '@/domain/store/application/use-cases/act
     CreateBrandController,
     ListBrandsController,
     ActivateProductController,
+    DisableProductController,
   ],
   providers: [
     CreateProductUseCase,
@@ -44,6 +47,7 @@ import { ActivateProductUseCase } from '@/domain/store/application/use-cases/act
     CreateBrandUseCase,
     ListBrandsUseCase,
     ActivateProductUseCase,
+    DisableProductUseCase,
   ],
 })
 export class HttpModule {}
