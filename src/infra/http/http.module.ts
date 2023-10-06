@@ -18,6 +18,8 @@ import { CreateBrandController } from './controllers/create-brand.controller'
 import { CreateBrandUseCase } from '@/domain/store/application/use-cases/create-brand'
 import { ListBrandsController } from './controllers/list-brands.controller'
 import { ListBrandsUseCase } from '@/domain/store/application/use-cases/list-brands'
+import { ActivateProductController } from './controllers/activate-product.controller'
+import { ActivateProductUseCase } from '@/domain/store/application/use-cases/activate-product'
 
 @Module({
   imports: [DatabaseModule, CryptographyModule, StorageModule],
@@ -30,6 +32,7 @@ import { ListBrandsUseCase } from '@/domain/store/application/use-cases/list-bra
     UploadImageController,
     CreateBrandController,
     ListBrandsController,
+    ActivateProductController,
   ],
   providers: [
     CreateProductUseCase,
@@ -40,6 +43,7 @@ import { ListBrandsUseCase } from '@/domain/store/application/use-cases/list-bra
     UploadAndCreateImageUseCase,
     CreateBrandUseCase,
     ListBrandsUseCase,
+    ActivateProductUseCase,
   ],
 })
 export class HttpModule {}

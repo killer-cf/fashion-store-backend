@@ -3,6 +3,7 @@ import { Product } from '../../enterprise/entities/product'
 import { ProductsRepository } from '../repositories/products-repository'
 import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error'
 import { ProductAlreadyActivatedError } from './errors/product-already-activated-error'
+import { Injectable } from '@nestjs/common'
 
 interface ActivateProductUseCaseRequest {
   productId: string
@@ -15,6 +16,7 @@ type ActivateProductUseCaseResponse = Either<
   }
 >
 
+@Injectable()
 export class ActivateProductUseCase {
   constructor(private productsRepository: ProductsRepository) {}
 
