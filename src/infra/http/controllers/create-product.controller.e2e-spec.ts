@@ -54,6 +54,7 @@ describe('Create product (e2e)', () => {
         description: 'Descrição do produto',
         colors: ['red'],
         imageIds: [image.id.toString()],
+        status: 'ACTIVE',
       })
 
     expect(response.statusCode).toBe(201)
