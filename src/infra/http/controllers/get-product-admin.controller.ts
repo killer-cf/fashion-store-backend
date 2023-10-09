@@ -1,5 +1,5 @@
 import { BadRequestException, Controller, Get, Param } from '@nestjs/common'
-import { Public } from '@/infra/auth/public.decorator'
+import { Roles } from '@/infra/auth/roles.decorator'
 import { GetProductUseCase } from '@/domain/store/application/use-cases/get-product'
 
 @Controller('admin/products/:id')
@@ -7,7 +7,7 @@ export class GetProductAdminController {
   constructor(private getProduct: GetProductUseCase) {}
 
   @Get()
-  @Public()
+  @Roles(['ADMIN'])
   async handle(@Param('id') id: string) {
     const result = await this.getProduct.execute({
       id,
