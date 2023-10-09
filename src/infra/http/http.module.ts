@@ -22,6 +22,9 @@ import { ActivateProductController } from './controllers/activate-product.contro
 import { ActivateProductUseCase } from '@/domain/store/application/use-cases/activate-product'
 import { DisableProductController } from './controllers/disable-product.controller'
 import { DisableProductUseCase } from '@/domain/store/application/use-cases/disable-product'
+import { GetProductController } from './controllers/get-product.controller'
+import { GetProductUseCase } from '@/domain/store/application/use-cases/get-product'
+import { GetProductAdminController } from './controllers/get-product-admin.controller'
 
 @Module({
   imports: [DatabaseModule, CryptographyModule, StorageModule],
@@ -36,6 +39,8 @@ import { DisableProductUseCase } from '@/domain/store/application/use-cases/disa
     ListBrandsController,
     ActivateProductController,
     DisableProductController,
+    GetProductController,
+    GetProductAdminController,
   ],
   providers: [
     CreateProductUseCase,
@@ -48,6 +53,7 @@ import { DisableProductUseCase } from '@/domain/store/application/use-cases/disa
     ListBrandsUseCase,
     ActivateProductUseCase,
     DisableProductUseCase,
+    GetProductUseCase,
   ],
 })
 export class HttpModule {}
