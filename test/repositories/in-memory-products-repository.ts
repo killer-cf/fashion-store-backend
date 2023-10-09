@@ -1,11 +1,18 @@
-import { ProductImagesRepository } from '@/domain/store/application/repositories/product-images-repository'
 import { ProductsRepository } from '@/domain/store/application/repositories/products-repository'
 import { Product } from '@/domain/store/enterprise/entities/product'
+import { ProductDetails } from '@/domain/store/enterprise/entities/value-objects/product-details'
+import { InMemoryBrandsRepository } from './in-memory-brands-repository'
+import { InMemoryProductImagesRepository } from './in-memory-product-images-repository'
+import { InMemoryImagesRepository } from './in-memory-images-repository'
 
 export class InMemoryProductsRepository implements ProductsRepository {
   public items: Product[] = []
 
-  constructor(private productImagesRepository: ProductImagesRepository) {}
+  constructor(
+    private productImagesRepository: InMemoryProductImagesRepository,
+    private brandsRepository: InMemoryBrandsRepository,
+    private imagesRepository: InMemoryImagesRepository,
+  ) {}
 
   async findById(id: string): Promise<Product | null> {
     const product = this.items.find((product) => product.id.toString() === id)
@@ -15,6 +22,60 @@ export class InMemoryProductsRepository implements ProductsRepository {
     }
 
     return product
+  }
+
+  async findDetailsById(id: string): Promise<ProductDetails | null> {
+    const product = this.items.find((product) => product.id.toString() === id)
+
+    if (!product) {
+      return null
+    }
+
+    const brand = this.brandsRepository.items.find(
+      (brand) => brand.id === product.brandId,
+    )
+
+    if (!brand) {
+      throw new Error(
+        `Brand with id ${product.brandId.toString()} does not exist`,
+      )
+    }
+
+    const productImages =
+      await this.productImagesRepository.findManyByProductId(
+        product.id.toString(),
+      )
+
+    const images = productImages.map((productImage) => {
+      const image = this.imagesRepository.items.find((image) =>
+        image.id.equals(productImage.imageId),
+      )
+
+      if (!image) {
+        throw new Error(
+          `Image with id ${productImage.id.toString()} does not exist`,
+        )
+      }
+
+      return image
+    })
+
+    const productDetails = ProductDetails.create({
+      brandId: product.brandId,
+      brandName: brand.name,
+      description: product.description,
+      status: product.status,
+      colors: product.colors,
+      model: product.model,
+      name: product.name,
+      price: product.price,
+      sku: product.sku,
+      images,
+      createdAt: product.createdAt,
+      updatedAt: product.updatedAt,
+    })
+
+    return productDetails
   }
 
   async findBySKU(sku: string): Promise<Product | null> {
