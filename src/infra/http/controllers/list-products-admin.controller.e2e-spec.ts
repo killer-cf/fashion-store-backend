@@ -66,4 +66,32 @@ describe('List products (e2e)', () => {
       ]),
     )
   })
+
+  test('[GET] /admin/products (Unauthorized)', async () => {
+    const admin = await adminFactory.makePrismaAdmin()
+    const brand = await brandFactory.makePrismaBrand()
+
+    const accessToken = jwt.sign({ sub: admin.id.toString(), role: 'CLIENT' })
+
+    await Promise.all([
+      productFactory.makePrismaProduct({
+        name: 'Xiaomi Redimi 10',
+        brandId: brand.id,
+        price: 10000,
+      }),
+      productFactory.makePrismaProduct({
+        name: 'Xiaomi mi 9t',
+        brandId: brand.id,
+        price: 30000,
+        status: ProductStatus.create('DISABLED'),
+      }),
+    ])
+
+    const response = await request(app.getHttpServer())
+      .get('/admin/products')
+      .set('Authorization', 'Bearer ' + accessToken)
+      .send({})
+
+    expect(response.statusCode).toBe(403)
+  })
 })
