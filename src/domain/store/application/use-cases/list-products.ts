@@ -5,6 +5,7 @@ import { Injectable } from '@nestjs/common'
 
 interface ListProductsUseCaseRequest {
   page: number
+  isAdmin: boolean
 }
 
 type ListProductsUseCaseResponse = Either<
@@ -20,8 +21,11 @@ export class ListProductsUseCase {
 
   async execute({
     page,
+    isAdmin,
   }: ListProductsUseCaseRequest): Promise<ListProductsUseCaseResponse> {
-    const products = await this.productsRepository.listAll(page)
+    const products = isAdmin
+      ? await this.productsRepository.listAll(page)
+      : await this.productsRepository.listAllActive(page)
 
     return right({ products })
   }

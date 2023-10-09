@@ -33,6 +33,14 @@ export class InMemoryProductsRepository implements ProductsRepository {
     return products
   }
 
+  async listAllActive(page: number): Promise<Product[]> {
+    const products = this.items
+      .filter((product) => product.isActive() === true)
+      .slice((page - 1) * 20, page * 20)
+
+    return products
+  }
+
   async create(product: Product): Promise<void> {
     this.items.push(product)
 

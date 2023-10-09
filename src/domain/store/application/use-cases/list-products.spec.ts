@@ -2,6 +2,7 @@ import { InMemoryProductsRepository } from 'test/repositories/in-memory-products
 import { ListProductsUseCase } from './list-products'
 import { makeProduct } from 'test/factories/make-product'
 import { InMemoryProductImagesRepository } from 'test/repositories/in-memory-product-images-repository'
+import { ProductStatus } from '../../enterprise/entities/value-objects/product-status'
 
 describe('List Products', () => {
   let inMemoryProductImagesRepository: InMemoryProductImagesRepository
@@ -16,16 +17,42 @@ describe('List Products', () => {
     sut = new ListProductsUseCase(inMemoryProductsRepository)
   })
 
-  it('should be able to list products', async () => {
+  it('should be able to list active products when is not admin', async () => {
     inMemoryProductsRepository.create(makeProduct())
     inMemoryProductsRepository.create(makeProduct())
+    inMemoryProductsRepository.create(
+      makeProduct({
+        name: 'Product Disabled',
+        status: ProductStatus.create('DISABLED'),
+      }),
+    )
 
     const result = await sut.execute({
       page: 1,
+      isAdmin: false,
     })
 
     expect(result.isRight()).toBe(true)
-    expect(inMemoryProductsRepository.items).toHaveLength(2)
+    expect(result.value?.products).toHaveLength(2)
+  })
+
+  it('should be able to list active and disabled products when is admin', async () => {
+    inMemoryProductsRepository.create(makeProduct())
+    inMemoryProductsRepository.create(makeProduct())
+    inMemoryProductsRepository.create(
+      makeProduct({
+        name: 'Product Disabled',
+        status: ProductStatus.create('DISABLED'),
+      }),
+    )
+
+    const result = await sut.execute({
+      page: 1,
+      isAdmin: true,
+    })
+
+    expect(result.isRight()).toBe(true)
+    expect(result.value?.products).toHaveLength(3)
   })
 
   it('should be able to list paginated products', async () => {
@@ -39,6 +66,7 @@ describe('List Products', () => {
 
     const result = await sut.execute({
       page: 2,
+      isAdmin: false,
     })
 
     expect(result.isRight()).toBe(true)
