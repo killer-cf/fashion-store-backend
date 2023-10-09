@@ -25,12 +25,14 @@ import { DisableProductUseCase } from '@/domain/store/application/use-cases/disa
 import { GetProductController } from './controllers/get-product.controller'
 import { GetProductUseCase } from '@/domain/store/application/use-cases/get-product'
 import { GetProductAdminController } from './controllers/get-product-admin.controller'
+import { ListProductsAdminController } from './controllers/list-products-admin.controller'
 
 @Module({
   imports: [DatabaseModule, CryptographyModule, StorageModule],
   controllers: [
     CreateProductController,
     ListProductsController,
+    ListProductsAdminController,
     CreateAccountController,
     AuthenticateController,
     CreateOrderController,

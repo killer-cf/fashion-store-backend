@@ -61,6 +61,24 @@ export class PrismaProductsRepository implements ProductsRepository {
     return products.map(PrismaProductMapper.toDomain)
   }
 
+  async listAllActive(page: number): Promise<Product[]> {
+    const products = await this.prisma.product.findMany({
+      orderBy: {
+        createdAt: 'desc',
+      },
+      where: {
+        status: 'ACTIVE',
+      },
+      take: 20,
+      skip: (page - 1) * 20,
+      include: {
+        brand: true,
+      },
+    })
+
+    return products.map(PrismaProductMapper.toDomain)
+  }
+
   async create(product: Product): Promise<void> {
     const data = PrismaProductMapper.toPrisma(product)
 

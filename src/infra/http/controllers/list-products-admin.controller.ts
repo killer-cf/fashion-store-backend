@@ -3,7 +3,7 @@ import { ZodValidationPipe } from '@/infra/pipes/zod-validation-pipe'
 import { BadRequestException, Controller, Get, Query } from '@nestjs/common'
 import { z } from 'zod'
 import { ProductPresenter } from '../presenters/product-presenter'
-import { Public } from '@/infra/auth/public.decorator'
+import { Roles } from '@/infra/auth/roles.decorator'
 
 const pageQueryParamSchema = z
   .string()
@@ -16,16 +16,16 @@ const queryValidationPipe = new ZodValidationPipe(pageQueryParamSchema)
 
 type PageQueryParamSchema = z.infer<typeof pageQueryParamSchema>
 
-@Controller('/products')
-export class ListProductsController {
+@Controller('/admin/products')
+export class ListProductsAdminController {
   constructor(private listProducts: ListProductsUseCase) {}
 
-  @Public()
   @Get()
+  @Roles(['ADMIN'])
   async handle(@Query('page', queryValidationPipe) page: PageQueryParamSchema) {
     const result = await this.listProducts.execute({
       page,
-      isAdmin: false,
+      isAdmin: true,
     })
 
     if (result.isLeft()) {
