@@ -14,8 +14,10 @@ import { ImagesRepository } from '@/domain/store/application/repositories/images
 import { PrismaImagesRepository } from './prisma/repositories/prisma-images-repository'
 import { ProductImagesRepository } from '@/domain/store/application/repositories/product-images-repository'
 import { PrismaProductImagesRepository } from './prisma/repositories/prisma-product-image-repository'
+import { CacheModule } from '../cache/cache.module'
 
 @Module({
+  imports: [CacheModule],
   providers: [
     PrismaService,
     { provide: ProductsRepository, useClass: PrismaProductsRepository },
