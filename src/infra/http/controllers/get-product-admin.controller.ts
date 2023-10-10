@@ -1,6 +1,7 @@
 import { BadRequestException, Controller, Get, Param } from '@nestjs/common'
 import { Roles } from '@/infra/auth/roles.decorator'
 import { GetProductUseCase } from '@/domain/store/application/use-cases/get-product'
+import { ProductDetailsPresenter } from '../presenters/product-details-presenter'
 
 @Controller('admin/products/:id')
 export class GetProductAdminController {
@@ -19,7 +20,7 @@ export class GetProductAdminController {
       throw new BadRequestException()
     }
 
-    const product = result.value.product
+    const product = ProductDetailsPresenter.toHTTP(result.value.product)
 
     return { product }
   }

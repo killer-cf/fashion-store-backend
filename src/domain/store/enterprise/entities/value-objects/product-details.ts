@@ -4,6 +4,7 @@ import { ProductStatus, Status } from './product-status'
 import { UniqueEntityID } from '@/core/entities/unique-entity-id'
 
 export type ProductDetailsProps = {
+  productId: UniqueEntityID
   brandId: UniqueEntityID
   brandName: string
   name: string
@@ -19,6 +20,10 @@ export type ProductDetailsProps = {
 }
 
 export class ProductDetails extends ValueObject<ProductDetailsProps> {
+  get productId() {
+    return this.props.productId
+  }
+
   get name() {
     return this.props.name
   }
@@ -37,6 +42,10 @@ export class ProductDetails extends ValueObject<ProductDetailsProps> {
 
   get colors() {
     return this.props.colors
+  }
+
+  get status() {
+    return this.props.status
   }
 
   get description() {

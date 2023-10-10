@@ -61,6 +61,7 @@ export class InMemoryProductsRepository implements ProductsRepository {
     })
 
     const productDetails = ProductDetails.create({
+      productId: product.id,
       brandId: product.brandId,
       brandName: brand.name,
       description: product.description,
