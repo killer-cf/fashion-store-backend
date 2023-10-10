@@ -7,17 +7,25 @@ import { NotAllowedError } from '@/core/errors/not-allowed-error'
 import { makeProductImage } from 'test/factories/make-product-image'
 import { UniqueEntityID } from '@/core/entities/unique-entity-id'
 import { InMemoryProductImagesRepository } from 'test/repositories/in-memory-product-images-repository'
+import { InMemoryBrandsRepository } from 'test/repositories/in-memory-brands-repository'
+import { InMemoryImagesRepository } from 'test/repositories/in-memory-images-repository'
 
 describe('Edit product', () => {
   let inMemoryProductImagesRepository: InMemoryProductImagesRepository
   let inMemoryProductsRepository: InMemoryProductsRepository
   let inMemoryAdminsRepository: InMemoryAdminsRepository
+  let inMemoryBrandsRepository: InMemoryBrandsRepository
+  let inMemoryImagesRepository: InMemoryImagesRepository
   let sut: EditProductUseCase
 
   beforeEach(() => {
     inMemoryProductImagesRepository = new InMemoryProductImagesRepository()
+    inMemoryBrandsRepository = new InMemoryBrandsRepository()
+    inMemoryImagesRepository = new InMemoryImagesRepository()
     inMemoryProductsRepository = new InMemoryProductsRepository(
       inMemoryProductImagesRepository,
+      inMemoryBrandsRepository,
+      inMemoryImagesRepository,
     )
     inMemoryAdminsRepository = new InMemoryAdminsRepository()
     sut = new EditProductUseCase(

@@ -4,19 +4,24 @@ import { InMemoryBrandsRepository } from 'test/repositories/in-memory-brands-rep
 import { Brand } from '../../enterprise/entities/brand'
 import { UniqueEntityID } from '@/core/entities/unique-entity-id'
 import { InMemoryProductImagesRepository } from 'test/repositories/in-memory-product-images-repository'
+import { InMemoryImagesRepository } from 'test/repositories/in-memory-images-repository'
 
 describe('Create Product', () => {
   let inMemoryProductImagesRepository: InMemoryProductImagesRepository
   let inMemoryProductsRepository: InMemoryProductsRepository
   let inMemoryBrandsRepository: InMemoryBrandsRepository
+  let inMemoryImagesRepository: InMemoryImagesRepository
   let sut: CreateProductUseCase
 
   beforeEach(() => {
+    inMemoryImagesRepository = new InMemoryImagesRepository()
+    inMemoryBrandsRepository = new InMemoryBrandsRepository()
     inMemoryProductImagesRepository = new InMemoryProductImagesRepository()
     inMemoryProductsRepository = new InMemoryProductsRepository(
       inMemoryProductImagesRepository,
+      inMemoryBrandsRepository,
+      inMemoryImagesRepository,
     )
-    inMemoryBrandsRepository = new InMemoryBrandsRepository()
     sut = new CreateProductUseCase(
       inMemoryProductsRepository,
       inMemoryBrandsRepository,
