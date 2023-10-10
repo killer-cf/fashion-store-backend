@@ -6,12 +6,14 @@ import { PrismaProductMapper } from '../mappers/prisma-product-mapper'
 import { ProductImagesRepository } from '@/domain/store/application/repositories/product-images-repository'
 import { ProductDetails } from '@/domain/store/enterprise/entities/value-objects/product-details'
 import { PrismaProductDetailsMapper } from '../mappers/prisma-product-details-mapper'
+import { CacheRepository } from '@/infra/cache/cache-repository'
 
 @Injectable()
 export class PrismaProductsRepository implements ProductsRepository {
   constructor(
     private prisma: PrismaService,
     private productImagesRepository: ProductImagesRepository,
+    private cache: CacheRepository,
   ) {}
 
   async findBySKU(sku: string): Promise<Product | null> {
@@ -49,6 +51,12 @@ export class PrismaProductsRepository implements ProductsRepository {
   }
 
   async findDetailsById(id: string): Promise<ProductDetails | null> {
+    const cacheHit = await this.cache.get(`product:${id}:details`)
+
+    if (cacheHit) {
+      return JSON.parse(cacheHit)
+    }
+
     const product = await this.prisma.product.findUnique({
       where: {
         id,
@@ -63,7 +71,14 @@ export class PrismaProductsRepository implements ProductsRepository {
       return null
     }
 
-    return PrismaProductDetailsMapper.toDomain(product)
+    const productDetails = PrismaProductDetailsMapper.toDomain(product)
+
+    await this.cache.set(
+      `product:${id}:details`,
+      JSON.stringify(productDetails),
+    )
+
+    return productDetails
   }
 
   async listAll(page: number): Promise<Product[]> {
