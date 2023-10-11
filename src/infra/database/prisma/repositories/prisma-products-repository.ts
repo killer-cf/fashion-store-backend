@@ -136,6 +136,7 @@ export class PrismaProductsRepository implements ProductsRepository {
       }),
       this.productImagesRepository.createMany(product.images.getNewItems()),
       this.productImagesRepository.deleteMany(product.images.getRemovedItems()),
+      this.cache.delete(`product:${product.id.toString()}:details`),
     ])
   }
 }
