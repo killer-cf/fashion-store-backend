@@ -1,6 +1,17 @@
 version: '3.8'
 
 services: 
+  app:
+    build: .
+    ports:
+      - 3333:3333
+    # volumes:
+    #   - .:/home/node/app
+    env_file:
+      - .env.prod
+    depends_on:
+      - postgres
+
   postgres:
     container_name: fashion-store-pg
     image: postgres
@@ -11,13 +22,9 @@ services:
       - POSTGRES_PASSWORD=docker
       - POSTGRES_DB=fashion-store
       - PGDATA=/data/postgres
-    volumes:
-      - ./data/pg:/data/postgres
 
   cache: 
     container_name: fashion-store-cache
     image: redis
     ports:
       - 6379:6379
-    volumes:
-      - ./data/redis:/data
