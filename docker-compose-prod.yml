@@ -2,9 +2,7 @@ version: '3.8'
 
 services: 
   app:
-    build:
-      context: .
-      target: ${STAGE:-builder}
+    build: .
     ports:
       - 3333:3333
     # volumes:

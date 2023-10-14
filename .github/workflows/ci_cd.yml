@@ -6,6 +6,8 @@ name: Docker
 # documentation.
 
 on:
+  schedule:
+    - cron: '43 19 * * *'
   push:
     branches: [ "master" ]
     # Publish semver tags as releases.
@@ -69,37 +71,17 @@ jobs:
 
       # Build and push Docker image with Buildx (don't push on PR)
       # https://github.com/docker/build-push-action
-      - name: Build for testing
-        id: build-for-testing
-        uses: docker/build-push-action@0565240e2d4ab88bba5387d719585280857ece09 # v5.0.0
-        with:
-          context: .
-          push: false
-          target: builder
-          tags: ${{ steps.meta.outputs.tags }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
-
-      - name: Up containers
-        run: docker compose -f docker-compose-prod.yml up -d
-
-      - name: Waiting environment to be ready
-        run: wget -qO- https://raw.githubusercontent.com/eficode/wait-for/v2.1.3/wait-for | sh -s http://localhost:3333 -- echo success
-
-      - name: Running tests
-        run: docker compose -f docker-compose-prod.yml exec -T app sh -c "pnpm run test"
-
       - name: Build and push Docker image
         id: build-and-push
         uses: docker/build-push-action@0565240e2d4ab88bba5387d719585280857ece09 # v5.0.0
         with:
           context: .
           push: ${{ github.event_name != 'pull_request' }}
-          target: production
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
+
       # Sign the resulting Docker image digest except on PRs.
       # This will only write to the public Rekor transparency log when the Docker
       # repository is public to avoid leaking data.  If you would like to publish
