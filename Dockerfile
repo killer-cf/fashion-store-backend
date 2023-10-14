@@ -16,7 +16,7 @@ COPY . .
 
 RUN pnpm run build
 
-FROM node:16.16-slim
+FROM node:16.16-slim AS production
 
 RUN apt-get update -y && apt-get install -y openssl
 

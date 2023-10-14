@@ -4,7 +4,7 @@ services:
   app:
     build:
       context: .
-      target: ${STAGE:-build}
+      target: ${STAGE:-builder}
     ports:
       - 3333:3333
     # volumes:
