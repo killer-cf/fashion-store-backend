@@ -17,6 +17,11 @@ enum ProductStatus {
   DISABLED
 }
 
+enum CouponStatus {
+  ACTIVE
+  DISABLED
+}
+
 model User {
   id       String   @id @default(uuid())
   name     String
@@ -97,4 +102,21 @@ model Image {
   product Product? @relation(fields: [product_id], references: [id])
 
   @@map("images")
+}
+
+model Coupon {
+  id           String       @id @default(uuid())
+  code         String       @unique
+  status       CouponStatus
+  description  String
+  discount     Int
+  discountType String
+  maxDiscount  Int
+  minValue     Int
+  quantity     Int
+  expiresAt    DateTime
+  createdAt    DateTime     @default(now()) @map("created_at")
+  updatedAt    DateTime?    @updatedAt @map("updated_at")
+
+  @@map("coupons")
 }

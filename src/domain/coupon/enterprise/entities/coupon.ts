@@ -22,6 +22,10 @@ export class Coupon extends Entity<CouponProps> {
     return this.props.code
   }
 
+  get status() {
+    return this.props.status
+  }
+
   get description() {
     return this.props.description
   }

@@ -15,6 +15,8 @@ import { PrismaImagesRepository } from './prisma/repositories/prisma-images-repo
 import { ProductImagesRepository } from '@/domain/store/application/repositories/product-images-repository'
 import { PrismaProductImagesRepository } from './prisma/repositories/prisma-product-image-repository'
 import { CacheModule } from '../cache/cache.module'
+import { CouponsRepository } from '@/domain/coupon/application/repositories/coupons-repository'
+import { PrismaCouponsRepository } from './prisma/repositories/prisma-coupons-repository'
 
 @Module({
   imports: [CacheModule],
@@ -30,6 +32,10 @@ import { CacheModule } from '../cache/cache.module'
       provide: ProductImagesRepository,
       useClass: PrismaProductImagesRepository,
     },
+    {
+      provide: CouponsRepository,
+      useClass: PrismaCouponsRepository,
+    },
   ],
   exports: [
     PrismaService,
@@ -40,6 +46,7 @@ import { CacheModule } from '../cache/cache.module'
     BrandsRepository,
     ImagesRepository,
     ProductImagesRepository,
+    CouponsRepository,
   ],
 })
 export class DatabaseModule {}
