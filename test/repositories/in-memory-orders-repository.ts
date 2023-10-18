@@ -20,4 +20,10 @@ export class InMemoryOrdersRepository implements OrdersRepository {
 
     DomainEvents.dispatchEventsForAggregate(order.id)
   }
+
+  async save(order: Order): Promise<void> {
+    const orderIndex = this.items.findIndex((item) => item.id === order.id)
+
+    this.items[orderIndex] = order
+  }
 }

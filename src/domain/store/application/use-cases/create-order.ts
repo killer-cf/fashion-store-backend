@@ -66,7 +66,7 @@ export class CreateOrderUseCase {
       clientId: new UniqueEntityID(clientId),
       address,
       items: [],
-      totalPrice: totalOfProductItems,
+      subtotal: totalOfProductItems,
     })
 
     const orderItems = items.map((item) => {

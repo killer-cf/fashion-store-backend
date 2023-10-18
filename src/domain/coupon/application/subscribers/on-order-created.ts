@@ -23,7 +23,7 @@ export class OnOrderCreated implements EventHandler {
   private async useCoupon({ order }: OrderCreatedEvent) {
     if (order.couponCode && !order.state.isCanceled()) {
       const result = await this.validateCoupon.execute({
-        value: order.totalPrice,
+        value: order.subtotal,
         code: order.couponCode,
       })
 
@@ -31,8 +31,12 @@ export class OnOrderCreated implements EventHandler {
         const coupon = result.value.coupon
 
         coupon.use()
+        order.couponValue = result.value.couponDiscount
 
-        await this.couponsRepository.save(coupon)
+        Promise.all([
+          this.couponsRepository.save(coupon),
+          this.ordersRepository.save(order),
+        ])
       }
     }
   }

@@ -6,20 +6,26 @@ import { OrderState, State } from './value-objects/order-state'
 import { OrderCreatedEvent } from '../events/order-created-event'
 
 export interface OrderProps {
-  totalPrice: number
+  totalPrice?: number
+  subtotal: number
   clientId: UniqueEntityID
   address: string
   state: OrderState
   items: OrderItem[]
   trackingCode?: string | null
   couponCode?: string | null
+  couponValue: number
   createdAt: Date
   updatedAt?: Date | null
 }
 
 export class Order extends AggregateRoot<OrderProps> {
   get totalPrice() {
-    return this.props.totalPrice
+    return this.props.subtotal - this.props.couponValue
+  }
+
+  get subtotal() {
+    return this.props.subtotal
   }
 
   get clientId() {
@@ -60,6 +66,14 @@ export class Order extends AggregateRoot<OrderProps> {
     return this.props.couponCode
   }
 
+  get couponValue() {
+    return this.props.couponValue
+  }
+
+  set couponValue(value: number) {
+    this.props.couponValue = value
+  }
+
   get createdAt() {
     return this.props.createdAt
   }
@@ -93,12 +107,13 @@ export class Order extends AggregateRoot<OrderProps> {
   }
 
   static create(
-    props: Optional<OrderProps, 'state' | 'createdAt'>,
+    props: Optional<OrderProps, 'state' | 'createdAt' | 'couponValue'>,
     id?: UniqueEntityID,
   ) {
     const order = new Order(
       {
         state: props.state ?? new OrderState(State.PENDING),
+        couponValue: props.couponValue ?? 0,
         createdAt: props.createdAt ?? new Date(),
         ...props,
       },

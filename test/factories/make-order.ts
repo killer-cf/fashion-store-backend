@@ -12,7 +12,7 @@ export function makeOrder(
   const order = Order.create(
     {
       clientId: new UniqueEntityID(),
-      totalPrice: faker.number.int(),
+      subtotal: 1,
       address: faker.location.streetAddress(),
       items: [],
       ...override,

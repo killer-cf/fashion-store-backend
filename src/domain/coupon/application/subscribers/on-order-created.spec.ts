@@ -39,9 +39,11 @@ describe('On order created', () => {
   it('should use and decrease coupon when an order is created', async () => {
     const coupon = makeCoupon({
       quantity: 10,
+      discount: 5000,
     })
     const order = makeOrder({
       couponCode: coupon.code,
+      subtotal: 10000,
     })
 
     inMemoryCouponsRepository.create(coupon)
@@ -49,5 +51,9 @@ describe('On order created', () => {
 
     await waitFor(() => expect(couponsRepositorySave).toHaveBeenCalled())
     expect(inMemoryCouponsRepository.items[0].quantity).toBe(9)
+    console.log(inMemoryOrdersRepository.items[0].couponValue)
+    console.log(inMemoryOrdersRepository.items[0].totalPrice)
+    expect(inMemoryOrdersRepository.items[0].couponValue).toBe(5000)
+    expect(inMemoryOrdersRepository.items[0].totalPrice).toBe(5000)
   })
 })
