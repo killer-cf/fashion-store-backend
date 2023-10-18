@@ -6,6 +6,7 @@ import { CouponSoldOutError } from './errors/coupon-sold-out-error'
 import { DateValidator } from '../support/date-validator'
 import { CouponExpiredError } from './errors/coupon-expired-error'
 import { CouponMinValueError } from './errors/coupon-min-value-error'
+import { Coupon } from '../../enterprise/entities/coupon'
 
 interface ValidateCouponUseCaseRequest {
   value: number
@@ -18,6 +19,7 @@ type ValidateCouponUseCaseResponse = Either<
   | CouponExpiredError
   | CouponMinValueError,
   {
+    coupon: Coupon
     couponDiscount: number
   }
 >
@@ -46,6 +48,7 @@ export class ValidateCouponUseCase {
 
     return right({
       couponDiscount: coupon.finalDiscount(value),
+      coupon,
     })
   }
 }

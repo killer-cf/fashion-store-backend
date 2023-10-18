@@ -3,6 +3,7 @@ import { OrderItem } from './order-item'
 import { Optional } from '@/core/types/optional'
 import { AggregateRoot } from '@/core/entities/aggregate-root'
 import { OrderState, State } from './value-objects/order-state'
+import { OrderCreatedEvent } from '../events/order-created-event'
 
 export interface OrderProps {
   totalPrice: number
@@ -11,6 +12,7 @@ export interface OrderProps {
   state: OrderState
   items: OrderItem[]
   trackingCode?: string | null
+  couponCode?: string | null
   createdAt: Date
   updatedAt?: Date | null
 }
@@ -52,6 +54,10 @@ export class Order extends AggregateRoot<OrderProps> {
   set trackingCode(code: string | null | undefined) {
     this.props.trackingCode = code
     this.touch()
+  }
+
+  get couponCode() {
+    return this.props.couponCode
   }
 
   get createdAt() {
@@ -98,6 +104,12 @@ export class Order extends AggregateRoot<OrderProps> {
       },
       id,
     )
+
+    const isNewOrder = !id
+
+    if (isNewOrder) {
+      order.addDomainEvent(new OrderCreatedEvent(order))
+    }
 
     return order
   }
