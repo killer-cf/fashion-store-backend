@@ -58,6 +58,18 @@ export class Coupon extends Entity<CouponProps> {
     return this.props.updatedAt
   }
 
+  public finalDiscount(value: number) {
+    if (this.props.discountType === 'amount') {
+      return this.props.discount
+    }
+
+    const discount = (this.props.discount / 100) * value
+    const finalDiscount =
+      discount > this.props.maxDiscount ? this.props.maxDiscount : discount
+
+    return finalDiscount
+  }
+
   public activate() {
     this.props.status = new CouponStatus(Status.ACTIVE)
   }
