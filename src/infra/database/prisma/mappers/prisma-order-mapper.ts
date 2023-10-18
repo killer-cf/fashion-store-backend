@@ -29,7 +29,7 @@ export class PrismaOrderMapper {
       {
         address: raw.address,
         state: new OrderState(raw.state as State),
-        totalPrice: raw.totalPrice,
+        subtotal: raw.totalPrice,
         trackingCode: raw.trackingCode,
         items,
         clientId: new UniqueEntityID(raw.client_id),
