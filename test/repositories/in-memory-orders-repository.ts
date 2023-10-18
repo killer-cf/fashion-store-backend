@@ -1,3 +1,4 @@
+import { DomainEvents } from '@/core/events/domain-events'
 import { OrdersRepository } from '@/domain/store/application/repositories/orders-repository'
 import { Order } from '@/domain/store/enterprise/entities/order'
 
@@ -16,5 +17,7 @@ export class InMemoryOrdersRepository implements OrdersRepository {
 
   async create(order: Order): Promise<void> {
     this.items.push(order)
+
+    DomainEvents.dispatchEventsForAggregate(order.id)
   }
 }
