@@ -19,4 +19,10 @@ export class InMemoryCouponsRepository implements CouponsRepository {
   async create(coupon: Coupon): Promise<void> {
     this.items.push(coupon)
   }
+
+  async save(coupon: Coupon): Promise<void> {
+    const couponIndex = this.items.findIndex((item) => item.id === coupon.id)
+
+    this.items[couponIndex] = coupon
+  }
 }
