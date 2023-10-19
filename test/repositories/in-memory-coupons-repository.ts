@@ -1,3 +1,4 @@
+import { PaginationParams } from '@/core/repositories/pagination-params'
 import { CouponsRepository } from '@/domain/coupon/application/repositories/coupons-repository'
 import { Coupon } from '@/domain/coupon/enterprise/entities/coupon'
 
@@ -14,6 +15,12 @@ export class InMemoryCouponsRepository implements CouponsRepository {
     }
 
     return coupon
+  }
+
+  async findMany({ page }: PaginationParams): Promise<Coupon[]> {
+    const coupons = this.items.slice((page - 1) * 20, page * 20)
+
+    return coupons
   }
 
   async create(coupon: Coupon): Promise<void> {
