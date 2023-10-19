@@ -29,7 +29,10 @@ export class PrismaOrderMapper {
       {
         address: raw.address,
         state: new OrderState(raw.state as State),
-        subtotal: raw.totalPrice,
+        totalPrice: raw.totalPrice,
+        subtotal: raw.subtotal,
+        couponValue: raw.couponValue,
+        couponCode: raw.couponCode,
         trackingCode: raw.trackingCode,
         items,
         clientId: new UniqueEntityID(raw.client_id),
@@ -55,6 +58,9 @@ export class PrismaOrderMapper {
       address: order.address,
       trackingCode: order.trackingCode,
       totalPrice: order.totalPrice,
+      subtotal: order.subtotal,
+      couponValue: order.couponValue,
+      couponCode: order.couponCode,
       client_id: order.clientId.toString(),
       state: order.state.toString(),
       order_items: {

@@ -58,8 +58,11 @@ model Product {
 model Order {
   id           String      @id @default(uuid())
   totalPrice   Int
+  subtotal     Int
   address      String
   trackingCode String?
+  couponCode   String?
+  couponValue  Int
   state        String
   client_id    String
   order_items  OrderItem[]

@@ -8,6 +8,7 @@ import { z } from 'zod'
 
 const createOrderSchema = z.object({
   address: z.string(),
+  couponCode: z.string().optional(),
   items: z
     .object({
       productId: z.string(),
@@ -31,10 +32,11 @@ export class CreateOrderController {
     @Body(bodyValidationPipe) body: CreateOrderBody,
     @CurrentUser() user: UserPayload,
   ) {
-    const { address, items } = body
+    const { address, items, couponCode } = body
 
     const result = await this.createOrder.execute({
       clientId: user.sub,
+      couponCode,
       address,
       items,
     })
