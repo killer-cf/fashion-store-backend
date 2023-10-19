@@ -32,7 +32,6 @@ export class OnOrderCreated implements EventHandler {
 
         coupon.use()
         order.couponValue = result.value.couponDiscount
-        console.log('order on event =>', order)
 
         Promise.all([
           this.couponsRepository.save(coupon),

@@ -44,14 +44,14 @@ export class PrismaOrderMapper {
   }
 
   static toPrisma(order: Order): Prisma.OrderUncheckedCreateInput {
-    const orderItems: Prisma.OrderItemUncheckedCreateWithoutOrderInput[] =
-      order.items.map((item) => {
-        return {
-          id: item.id.toString(),
-          product_id: item.productId.toString(),
-          quantity: item.quantity,
-        }
-      })
+    // const orderItems: Prisma.OrderItemUncheckedCreateWithoutOrderInput[] =
+    //   order.items.map((item) => {
+    //     return {
+    //       id: item.id.toString(),
+    //       product_id: item.productId.toString(),
+    //       quantity: item.quantity,
+    //     }
+    //   })
 
     return {
       id: order.id.toString(),
@@ -63,9 +63,6 @@ export class PrismaOrderMapper {
       couponCode: order.couponCode,
       client_id: order.clientId.toString(),
       state: order.state.toString(),
-      order_items: {
-        create: orderItems,
-      },
       createdAt: order.createdAt,
       updatedAt: order.updatedAt,
     }

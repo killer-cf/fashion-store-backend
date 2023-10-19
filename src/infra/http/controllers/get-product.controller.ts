@@ -16,7 +16,6 @@ export class GetProductController {
     })
 
     if (result.isLeft()) {
-      console.log(result.value)
       throw new BadRequestException()
     }
 
