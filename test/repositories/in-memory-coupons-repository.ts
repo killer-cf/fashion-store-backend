@@ -25,4 +25,10 @@ export class InMemoryCouponsRepository implements CouponsRepository {
 
     this.items[couponIndex] = coupon
   }
+
+  async delete(coupon: Coupon) {
+    const itemIndex = this.items.findIndex((item) => item.id === coupon.id)
+
+    this.items.splice(itemIndex, 1)
+  }
 }
