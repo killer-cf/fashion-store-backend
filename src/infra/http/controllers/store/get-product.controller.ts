@@ -1,7 +1,7 @@
 import { BadRequestException, Controller, Get, Param } from '@nestjs/common'
 import { Public } from '@/infra/auth/public.decorator'
 import { GetProductUseCase } from '@/domain/store/application/use-cases/get-product'
-import { ProductDetailsPresenter } from '../presenters/product-details-presenter'
+import { ProductDetailsPresenter } from '../../presenters/product-details-presenter'
 
 @Controller('/products/:id')
 export class GetProductController {
