@@ -4,10 +4,16 @@ import { Module } from '@nestjs/common'
 import { CreateCouponController } from './create-coupon.controller'
 import { ActivateCouponController } from './activate-coupon.controller'
 import { ActivateCouponUseCase } from '@/domain/coupon/application/use-cases/activate-coupon'
+import { DisableCouponController } from './disable-coupon.controller'
+import { DisableCouponUseCase } from '@/domain/coupon/application/use-cases/disable-coupon'
 
 @Module({
   imports: [DatabaseModule],
-  controllers: [CreateCouponController, ActivateCouponController],
-  providers: [CreateCouponUseCase, ActivateCouponUseCase],
+  controllers: [
+    CreateCouponController,
+    ActivateCouponController,
+    DisableCouponController,
+  ],
+  providers: [CreateCouponUseCase, ActivateCouponUseCase, DisableCouponUseCase],
 })
 export class CouponControllersModule {}

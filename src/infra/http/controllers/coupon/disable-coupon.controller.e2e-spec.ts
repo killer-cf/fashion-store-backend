@@ -9,7 +9,7 @@ import request from 'supertest'
 import { AdminFactory } from 'test/factories/make-admin'
 import { CouponFactory } from 'test/factories/make-coupon'
 
-describe('Activate coupon (e2e)', () => {
+describe('Disable coupon (e2e)', () => {
   let app: INestApplication
   let prisma: PrismaService
   let jwt: JwtService
@@ -32,16 +32,16 @@ describe('Activate coupon (e2e)', () => {
     await app.init()
   })
 
-  test('[PATCH] /coupons/:couponId/activate', async () => {
+  test('[PATCH] /coupons/:couponId/disable', async () => {
     const admin = await adminFactory.makePrismaAdmin()
     const coupon = await couponFactory.makePrismaCoupon({
-      status: CouponStatus.create('DISABLED'),
+      status: CouponStatus.create('ACTIVE'),
     })
 
     const accessToken = jwt.sign({ sub: admin.id.toString(), role: 'ADMIN' })
 
     const response = await request(app.getHttpServer())
-      .patch(`/coupons/${coupon.code}/activate`)
+      .patch(`/coupons/${coupon.code}/disable`)
       .set('Authorization', 'Bearer ' + accessToken)
       .send()
 
@@ -54,20 +54,20 @@ describe('Activate coupon (e2e)', () => {
     })
 
     expect(couponOnDatabase).toBeTruthy()
-    expect(couponOnDatabase?.status).toEqual('ACTIVE')
+    expect(couponOnDatabase?.status).toEqual('DISABLED')
   })
 
-  test('[PATCH] /coupons/:couponId/activate (Unauthorized)', async () => {
+  test('[PATCH] /coupons/:couponId/disable (Unauthorized)', async () => {
     const admin = await adminFactory.makePrismaAdmin({})
     const coupon = await couponFactory.makePrismaCoupon({
       code: 'PRIMEIRA',
-      status: CouponStatus.create('DISABLED'),
+      status: CouponStatus.create('ACTIVE'),
     })
 
     const accessToken = jwt.sign({ sub: admin.id.toString(), role: 'CLIENT' })
 
     const response = await request(app.getHttpServer())
-      .patch(`/coupons/${coupon.code}/activate`)
+      .patch(`/coupons/${coupon.code}/disable`)
       .set('Authorization', 'Bearer ' + accessToken)
       .send()
 
