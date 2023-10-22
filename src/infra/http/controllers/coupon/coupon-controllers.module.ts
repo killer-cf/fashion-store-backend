@@ -8,6 +8,8 @@ import { DisableCouponController } from './disable-coupon.controller'
 import { DisableCouponUseCase } from '@/domain/coupon/application/use-cases/disable-coupon'
 import { ListCouponsController } from './list-coupons.controller'
 import { ListCouponsUseCase } from '@/domain/coupon/application/use-cases/list-coupons'
+import { GetCouponController } from './get-coupon.controller'
+import { GetCouponUseCase } from '@/domain/coupon/application/use-cases/get-coupon'
 
 @Module({
   imports: [DatabaseModule],
@@ -16,12 +18,14 @@ import { ListCouponsUseCase } from '@/domain/coupon/application/use-cases/list-c
     ActivateCouponController,
     DisableCouponController,
     ListCouponsController,
+    GetCouponController,
   ],
   providers: [
     CreateCouponUseCase,
     ActivateCouponUseCase,
     DisableCouponUseCase,
     ListCouponsUseCase,
+    GetCouponUseCase,
   ],
 })
 export class CouponControllersModule {}
