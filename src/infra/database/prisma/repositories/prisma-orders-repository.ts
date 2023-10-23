@@ -3,6 +3,7 @@ import { PrismaService } from '../prisma.service'
 import { Order } from '@/domain/store/enterprise/entities/order'
 import { OrdersRepository } from '@/domain/store/application/repositories/orders-repository'
 import { PrismaOrderMapper } from '../mappers/prisma-order-mapper'
+import { DomainEvents } from '@/core/events/domain-events'
 
 @Injectable()
 export class PrismaOrdersRepository implements OrdersRepository {
@@ -44,14 +45,16 @@ export class PrismaOrdersRepository implements OrdersRepository {
     await this.prisma.order.create({
       data,
     })
+
+    DomainEvents.dispatchEventsForAggregate(order.id)
   }
 
   async save(order: Order): Promise<void> {
-    const data = PrismaOrderMapper.toPrisma(order)
+    const { id, ...data } = PrismaOrderMapper.toPrisma(order)
 
     await this.prisma.order.update({
       where: {
-        id: data.id,
+        id,
       },
       data,
     })

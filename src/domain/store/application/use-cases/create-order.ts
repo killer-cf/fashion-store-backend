@@ -11,6 +11,7 @@ import { Injectable } from '@nestjs/common'
 interface CreateOrderUseCaseRequest {
   clientId: string
   address: string
+  couponCode?: string
   items: {
     productId: string
     quantity: number
@@ -39,6 +40,7 @@ export class CreateOrderUseCase {
   async execute({
     clientId,
     address,
+    couponCode,
     items,
   }: CreateOrderUseCaseRequest): Promise<CreateOrderUseCaseResponse> {
     const verifiedProducts: ProductItem[] = []
@@ -63,10 +65,11 @@ export class CreateOrderUseCase {
     }, 0)
 
     const order = Order.create({
-      clientId: new UniqueEntityID(clientId),
       address,
+      couponCode,
+      clientId: new UniqueEntityID(clientId),
+      subtotal: totalOfProductItems,
       items: [],
-      totalPrice: totalOfProductItems,
     })
 
     const orderItems = items.map((item) => {
