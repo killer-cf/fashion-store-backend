@@ -1,5 +1,6 @@
 import { CategoriesRepository } from '@/domain/store/application/repositories/categories-repository'
 import { Category } from '@/domain/store/enterprise/entities/category'
+import { SubCategory } from '@/domain/store/enterprise/entities/sub-category'
 
 export class InMemoryCategoriesRepository implements CategoriesRepository {
   public items: Category[] = []
@@ -34,7 +35,12 @@ export class InMemoryCategoriesRepository implements CategoriesRepository {
         return
       }
 
-      parentCategory.subCategories.add(category)
+      const subCategory = SubCategory.create({
+        parentCategoryId: category.parentCategoryId,
+        subCategoryId: category.id,
+      })
+
+      parentCategory.subCategories.add(subCategory)
 
       await this.save(parentCategory)
     }

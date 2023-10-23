@@ -1,17 +1,21 @@
 import { Entity } from '@/core/entities/entity'
 import { UniqueEntityID } from '@/core/entities/unique-entity-id'
-import { CategoryList } from './category-list'
+import { SubCategoryList } from './sub-category-list'
 import { Optional } from '@/core/types/optional'
 
 export interface CategoryProps {
   name: string
   parentCategoryId?: UniqueEntityID
-  subCategories: CategoryList
+  subCategories: SubCategoryList
 }
 
 export class Category extends Entity<CategoryProps> {
   get name() {
     return this.props.name
+  }
+
+  set name(name: string) {
+    this.props.name = name
   }
 
   get parentCategoryId(): UniqueEntityID | undefined {
@@ -26,6 +30,10 @@ export class Category extends Entity<CategoryProps> {
     return this.props.subCategories
   }
 
+  set subCategories(subCategories: SubCategoryList) {
+    this.props.subCategories = subCategories
+  }
+
   public isSubCategory() {
     return !!this.props.parentCategoryId
   }
@@ -36,7 +44,7 @@ export class Category extends Entity<CategoryProps> {
   ) {
     const category = new Category(
       {
-        subCategories: new CategoryList(),
+        subCategories: new SubCategoryList(),
         ...props,
       },
       id,

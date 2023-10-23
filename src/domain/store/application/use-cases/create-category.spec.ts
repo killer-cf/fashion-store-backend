@@ -41,7 +41,12 @@ describe('Create Category', () => {
       expect(inMemoryCategoriesRepository.items[0].name).toEqual('Computadores')
       expect(
         inMemoryCategoriesRepository.items[0].subCategories.getItems(),
-      ).toEqual([result.value?.category])
+      ).toEqual([
+        expect.objectContaining({
+          subCategoryId: result.value.category.id,
+          parentCategoryId: category.id,
+        }),
+      ])
     }
   })
 })
