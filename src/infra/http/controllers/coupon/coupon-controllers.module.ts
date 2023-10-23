@@ -12,9 +12,12 @@ import { GetCouponController } from './get-coupon.controller'
 import { GetCouponUseCase } from '@/domain/coupon/application/use-cases/get-coupon'
 import { DeleteCouponController } from './delete-coupon.controller'
 import { DeleteCouponUseCase } from '@/domain/coupon/application/use-cases/delete-coupon'
+import { ValidateCouponController } from './validate-coupon.controller'
+import { ValidateCouponUseCase } from '@/domain/coupon/application/use-cases/validate-coupon'
+import { DateValidationModule } from '@/infra/date-validation/date-validation.module'
 
 @Module({
-  imports: [DatabaseModule],
+  imports: [DatabaseModule, DateValidationModule],
   controllers: [
     CreateCouponController,
     ActivateCouponController,
@@ -22,6 +25,7 @@ import { DeleteCouponUseCase } from '@/domain/coupon/application/use-cases/delet
     ListCouponsController,
     GetCouponController,
     DeleteCouponController,
+    ValidateCouponController,
   ],
   providers: [
     CreateCouponUseCase,
@@ -30,6 +34,7 @@ import { DeleteCouponUseCase } from '@/domain/coupon/application/use-cases/delet
     ListCouponsUseCase,
     GetCouponUseCase,
     DeleteCouponUseCase,
+    ValidateCouponUseCase,
   ],
 })
 export class CouponControllersModule {}
