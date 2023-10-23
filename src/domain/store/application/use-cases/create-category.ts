@@ -24,13 +24,11 @@ export class CreateCategoryUseCase {
     name,
     parentCategoryId,
   }: CreateCategoryUseCaseRequest): Promise<CreateCategoryUseCaseResponse> {
-    const parentCategoryIdEntity = parentCategoryId
-      ? new UniqueEntityID(parentCategoryId)
-      : undefined
-
     const category = Category.create({
       name,
-      parentCategoryId: parentCategoryIdEntity,
+      parentCategoryId: parentCategoryId
+        ? new UniqueEntityID(parentCategoryId)
+        : undefined,
     })
 
     await this.categoriesRepository.create(category)

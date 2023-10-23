@@ -38,6 +38,10 @@ describe('Create Category', () => {
       expect(inMemoryCategoriesRepository.items[1]).toEqual(
         result.value?.category,
       )
+      expect(inMemoryCategoriesRepository.items[0].name).toEqual('Computadores')
+      expect(
+        inMemoryCategoriesRepository.items[0].subCategories.getItems(),
+      ).toEqual([result.value?.category])
     }
   })
 })
