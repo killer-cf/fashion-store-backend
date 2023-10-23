@@ -32,7 +32,7 @@ describe('Activate coupon (e2e)', () => {
     await app.init()
   })
 
-  test('[PATCH] /coupons/:couponId/activate', async () => {
+  test('[PATCH] /coupons/:code/activate', async () => {
     const admin = await adminFactory.makePrismaAdmin()
     const coupon = await couponFactory.makePrismaCoupon({
       status: CouponStatus.create('DISABLED'),
@@ -57,7 +57,7 @@ describe('Activate coupon (e2e)', () => {
     expect(couponOnDatabase?.status).toEqual('ACTIVE')
   })
 
-  test('[PATCH] /coupons/:couponId/activate (Unauthorized)', async () => {
+  test('[PATCH] /coupons/:code/activate (Unauthorized)', async () => {
     const admin = await adminFactory.makePrismaAdmin({})
     const coupon = await couponFactory.makePrismaCoupon({
       code: 'PRIMEIRA',

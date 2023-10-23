@@ -1,7 +1,5 @@
-import { CouponStatus } from '@/domain/coupon/enterprise/entities/value-objects/coupon-status'
 import { AppModule } from '@/infra/app.module'
 import { DatabaseModule } from '@/infra/database/database.module'
-import { PrismaService } from '@/infra/database/prisma/prisma.service'
 import { INestApplication } from '@nestjs/common'
 import { JwtService } from '@nestjs/jwt'
 import { Test } from '@nestjs/testing'
@@ -11,7 +9,6 @@ import { CouponFactory } from 'test/factories/make-coupon'
 
 describe('Validate coupon (e2e)', () => {
   let app: INestApplication
-  let prisma: PrismaService
   let jwt: JwtService
   let adminFactory: AdminFactory
   let couponFactory: CouponFactory
@@ -25,7 +22,6 @@ describe('Validate coupon (e2e)', () => {
     app = moduleRef.createNestApplication()
 
     jwt = moduleRef.get(JwtService)
-    prisma = moduleRef.get(PrismaService)
     adminFactory = moduleRef.get(AdminFactory)
     couponFactory = moduleRef.get(CouponFactory)
 
