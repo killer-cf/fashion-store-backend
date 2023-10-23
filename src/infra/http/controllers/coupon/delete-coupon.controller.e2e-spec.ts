@@ -7,7 +7,7 @@ import request from 'supertest'
 import { AdminFactory } from 'test/factories/make-admin'
 import { CouponFactory } from 'test/factories/make-coupon'
 
-describe('Admin Get coupon (e2e)', () => {
+describe('Admin Delete coupon (e2e)', () => {
   let app: INestApplication
   let jwt: JwtService
   let adminFactory: AdminFactory
@@ -28,7 +28,7 @@ describe('Admin Get coupon (e2e)', () => {
     await app.init()
   })
 
-  test('[GET] /coupons/:code', async () => {
+  test('[DELETE] /coupons/:code', async () => {
     const admin = await adminFactory.makePrismaAdmin({})
     const coupon = await couponFactory.makePrismaCoupon({
       code: 'PRIMEIRACOMPRA',
@@ -38,24 +38,20 @@ describe('Admin Get coupon (e2e)', () => {
     const accessToken = jwt.sign({ sub: admin.id.toString(), role: 'ADMIN' })
 
     const response = await request(app.getHttpServer())
-      .get(`/coupons/${coupon.code}`)
+      .delete(`/coupons/${coupon.code}`)
       .set('Authorization', 'Bearer ' + accessToken)
       .send()
 
-    expect(response.statusCode).toBe(200)
+    expect(response.statusCode).toBe(204)
   })
 
-  test('[GET] /coupons/:code (Unauthorized)', async () => {
+  test('[DELETE] /coupons/:code (Unauthorized)', async () => {
     const admin = await adminFactory.makePrismaAdmin({})
-    const coupon = await couponFactory.makePrismaCoupon({
-      code: 'PRIMEIRACOMPRA1',
-      discount: 10000,
-    })
 
     const accessToken = jwt.sign({ sub: admin.id.toString(), role: 'CLIENT' })
 
     const response = await request(app.getHttpServer())
-      .get(`/coupons/${coupon.code}`)
+      .delete(`/coupons/PRIMEIRACOMPRA`)
       .set('Authorization', 'Bearer ' + accessToken)
       .send()
 

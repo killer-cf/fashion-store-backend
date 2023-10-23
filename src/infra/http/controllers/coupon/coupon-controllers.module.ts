@@ -10,6 +10,8 @@ import { ListCouponsController } from './list-coupons.controller'
 import { ListCouponsUseCase } from '@/domain/coupon/application/use-cases/list-coupons'
 import { GetCouponController } from './get-coupon.controller'
 import { GetCouponUseCase } from '@/domain/coupon/application/use-cases/get-coupon'
+import { DeleteCouponController } from './delete-coupon.controller'
+import { DeleteCouponUseCase } from '@/domain/coupon/application/use-cases/delete-coupon'
 
 @Module({
   imports: [DatabaseModule],
@@ -19,6 +21,7 @@ import { GetCouponUseCase } from '@/domain/coupon/application/use-cases/get-coup
     DisableCouponController,
     ListCouponsController,
     GetCouponController,
+    DeleteCouponController,
   ],
   providers: [
     CreateCouponUseCase,
@@ -26,6 +29,7 @@ import { GetCouponUseCase } from '@/domain/coupon/application/use-cases/get-coup
     DisableCouponUseCase,
     ListCouponsUseCase,
     GetCouponUseCase,
+    DeleteCouponUseCase,
   ],
 })
 export class CouponControllersModule {}
