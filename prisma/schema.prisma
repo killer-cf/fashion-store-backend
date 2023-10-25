@@ -123,3 +123,14 @@ model Coupon {
 
   @@map("coupons")
 }
+
+model Category {
+  id               String  @id @default(uuid())
+  name             String
+  parentCategoryId String?
+
+  parentCategory Category?  @relation("subcategories", fields: [parentCategoryId], references: [id])
+  subCategories  Category[] @relation("subcategories")
+
+  @@map("categories")
+}
