@@ -26,6 +26,8 @@ import { UploadImageController } from './upload-image.controller'
 import { DatabaseModule } from '@/infra/database/database.module'
 import { CryptographyModule } from '@/infra/cryptography/cryptography.module'
 import { StorageModule } from '@/infra/storage/storage.module'
+import { CreateCategoryController } from './create-category.controller'
+import { CreateCategoryUseCase } from '@/domain/store/application/use-cases/create-category'
 
 @Module({
   imports: [DatabaseModule, CryptographyModule, StorageModule],
@@ -43,6 +45,7 @@ import { StorageModule } from '@/infra/storage/storage.module'
     DisableProductController,
     GetProductController,
     GetProductAdminController,
+    CreateCategoryController,
   ],
   providers: [
     CreateProductUseCase,
@@ -56,6 +59,7 @@ import { StorageModule } from '@/infra/storage/storage.module'
     ActivateProductUseCase,
     DisableProductUseCase,
     GetProductUseCase,
+    CreateCategoryUseCase,
   ],
 })
 export class StoreControllersModule {}
