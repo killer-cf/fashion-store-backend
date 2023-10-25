@@ -1,7 +1,6 @@
 import { CategoriesRepository } from '@/domain/store/application/repositories/categories-repository'
 import { SubCategoriesRepository } from '@/domain/store/application/repositories/sub-categories-repository'
 import { Category } from '@/domain/store/enterprise/entities/category'
-import { SubCategory } from '@/domain/store/enterprise/entities/sub-category'
 
 export class InMemoryCategoriesRepository implements CategoriesRepository {
   public items: Category[] = []
@@ -29,24 +28,9 @@ export class InMemoryCategoriesRepository implements CategoriesRepository {
   async create(category: Category): Promise<void> {
     this.items.push(category)
 
-    if (category.parentCategoryId) {
-      const parentCategory = await this.findById(
-        category.parentCategoryId.toString(),
-      )
-
-      if (!parentCategory) {
-        return
-      }
-
-      const subCategory = SubCategory.create({
-        parentCategoryId: category.parentCategoryId,
-        subCategoryId: category.id,
-      })
-
-      parentCategory.subCategories.add(subCategory)
-
-      await this.save(parentCategory)
-    }
+    this.subCategoriesRepository.createMany(
+      category.subCategories.getNewItems(),
+    )
   }
 
   async save(category: Category): Promise<void> {
