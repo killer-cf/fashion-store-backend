@@ -22,7 +22,7 @@ export class Category extends Entity<CategoryProps> {
     return this.props.parentCategoryId
   }
 
-  set parentCategoryId(id: UniqueEntityID) {
+  set parentCategoryId(id: UniqueEntityID | undefined) {
     this.props.parentCategoryId = id
   }
 

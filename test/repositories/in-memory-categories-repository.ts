@@ -1,9 +1,12 @@
 import { CategoriesRepository } from '@/domain/store/application/repositories/categories-repository'
+import { SubCategoriesRepository } from '@/domain/store/application/repositories/sub-categories-repository'
 import { Category } from '@/domain/store/enterprise/entities/category'
 import { SubCategory } from '@/domain/store/enterprise/entities/sub-category'
 
 export class InMemoryCategoriesRepository implements CategoriesRepository {
   public items: Category[] = []
+
+  constructor(private subCategoriesRepository: SubCategoriesRepository) {}
 
   async findById(id: string): Promise<Category | null> {
     const category = this.items.find(
@@ -52,6 +55,13 @@ export class InMemoryCategoriesRepository implements CategoriesRepository {
     )
 
     this.items[categoryIndex] = category
+
+    this.subCategoriesRepository.createMany(
+      category.subCategories.getNewItems(),
+    )
+    this.subCategoriesRepository.deleteMany(
+      category.subCategories.getRemovedItems(),
+    )
   }
 
   async delete(category: Category) {

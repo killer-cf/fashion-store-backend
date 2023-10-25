@@ -10,7 +10,7 @@ import { SubCategory } from '../../enterprise/entities/sub-category'
 interface EditCategoryUseCaseRequest {
   categoryId: string
   name: string
-  parentCategoryId: string
+  parentCategoryId?: string
   subCategoriesIds: string[]
 }
 
@@ -54,7 +54,9 @@ export class EditCategoryUseCase {
     subCategoriesList.update(subCategories)
 
     category.name = name
-    category.parentCategoryId = new UniqueEntityID(parentCategoryId)
+    category.parentCategoryId = parentCategoryId
+      ? new UniqueEntityID(parentCategoryId)
+      : undefined
     category.subCategories = subCategoriesList
 
     await this.categoriesRepository.save(category)
