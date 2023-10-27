@@ -28,6 +28,8 @@ import { CryptographyModule } from '@/infra/cryptography/cryptography.module'
 import { StorageModule } from '@/infra/storage/storage.module'
 import { CreateCategoryController } from './create-category.controller'
 import { CreateCategoryUseCase } from '@/domain/store/application/use-cases/create-category'
+import { DeleteCategoryController } from './delete-category.controller'
+import { DeleteCategoryUseCase } from '@/domain/store/application/use-cases/delete-category'
 
 @Module({
   imports: [DatabaseModule, CryptographyModule, StorageModule],
@@ -46,6 +48,7 @@ import { CreateCategoryUseCase } from '@/domain/store/application/use-cases/crea
     GetProductController,
     GetProductAdminController,
     CreateCategoryController,
+    DeleteCategoryController,
   ],
   providers: [
     CreateProductUseCase,
@@ -60,6 +63,7 @@ import { CreateCategoryUseCase } from '@/domain/store/application/use-cases/crea
     DisableProductUseCase,
     GetProductUseCase,
     CreateCategoryUseCase,
+    DeleteCategoryUseCase,
   ],
 })
 export class StoreControllersModule {}
