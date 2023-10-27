@@ -7,9 +7,6 @@ export class PrismaCategoryMapper {
     return Category.create(
       {
         name: raw.name,
-        parentCategoryId: raw.parentCategoryId
-          ? new UniqueEntityID(raw.parentCategoryId)
-          : undefined,
       },
       new UniqueEntityID(raw.id),
     )
@@ -19,7 +16,6 @@ export class PrismaCategoryMapper {
     return {
       id: category.id.toString(),
       name: category.name,
-      parentCategoryId: category.parentCategoryId?.toString(),
     }
   }
 }

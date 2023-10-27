@@ -2,6 +2,7 @@ import { Either, left, right } from '@/core/either'
 import { Category } from '../../enterprise/entities/category'
 import { CategoriesRepository } from '../repositories/categories-repository'
 import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error'
+import { Injectable } from '@nestjs/common'
 
 interface EditCategoryUseCaseRequest {
   categoryId: string
@@ -15,6 +16,7 @@ type EditCategoryUseCaseResponse = Either<
   }
 >
 
+@Injectable()
 export class EditCategoryUseCase {
   constructor(private categoriesRepository: CategoriesRepository) {}
 

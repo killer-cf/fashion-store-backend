@@ -30,6 +30,8 @@ import { CreateCategoryController } from './create-category.controller'
 import { CreateCategoryUseCase } from '@/domain/store/application/use-cases/create-category'
 import { DeleteCategoryController } from './delete-category.controller'
 import { DeleteCategoryUseCase } from '@/domain/store/application/use-cases/delete-category'
+import { EditCategoryController } from './edit-category.controller'
+import { EditCategoryUseCase } from '@/domain/store/application/use-cases/edit-category'
 
 @Module({
   imports: [DatabaseModule, CryptographyModule, StorageModule],
@@ -49,6 +51,7 @@ import { DeleteCategoryUseCase } from '@/domain/store/application/use-cases/dele
     GetProductAdminController,
     CreateCategoryController,
     DeleteCategoryController,
+    EditCategoryController,
   ],
   providers: [
     CreateProductUseCase,
@@ -64,6 +67,7 @@ import { DeleteCategoryUseCase } from '@/domain/store/application/use-cases/dele
     GetProductUseCase,
     CreateCategoryUseCase,
     DeleteCategoryUseCase,
+    EditCategoryUseCase,
   ],
 })
 export class StoreControllersModule {}
