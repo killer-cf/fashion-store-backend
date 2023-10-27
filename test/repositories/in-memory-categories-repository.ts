@@ -1,12 +1,8 @@
 import { CategoriesRepository } from '@/domain/store/application/repositories/categories-repository'
-import { SubCategoriesRepository } from '@/domain/store/application/repositories/sub-categories-repository'
 import { Category } from '@/domain/store/enterprise/entities/category'
-import { CategoryWithSubCategories } from '@/domain/store/enterprise/entities/value-objects/category-with-sub-categories'
 
 export class InMemoryCategoriesRepository implements CategoriesRepository {
   public items: Category[] = []
-
-  constructor(private subCategoriesRepository: SubCategoriesRepository) {}
 
   async findById(id: string): Promise<Category | null> {
     const category = this.items.find(
@@ -26,40 +22,8 @@ export class InMemoryCategoriesRepository implements CategoriesRepository {
     return categories
   }
 
-  async findManyWithSubCategories(): Promise<CategoryWithSubCategories[]> {
-    const categories = this.items.filter(
-      (category) => !category.isSubCategory(),
-    )
-    console.log(categories)
-
-    const categoriesWithSubCategories = categories.map((category) => {
-      const subCategories: CategoryWithSubCategories[] = this.items
-        .filter((item) => item.parentCategoryId?.equals(category.id))
-        .map((sub) => {
-          return CategoryWithSubCategories.create({
-            id: sub.id,
-            name: sub.name,
-            subCategories: [],
-          })
-        })
-
-      return CategoryWithSubCategories.create({
-        id: category.id,
-        name: category.name,
-        subCategories,
-      })
-    })
-    console.log(categoriesWithSubCategories)
-
-    return categoriesWithSubCategories
-  }
-
   async create(category: Category): Promise<void> {
     this.items.push(category)
-
-    this.subCategoriesRepository.createMany(
-      category.subCategories.getNewItems(),
-    )
   }
 
   async save(category: Category): Promise<void> {
@@ -68,13 +32,6 @@ export class InMemoryCategoriesRepository implements CategoriesRepository {
     )
 
     this.items[categoryIndex] = category
-
-    this.subCategoriesRepository.createMany(
-      category.subCategories.getNewItems(),
-    )
-    this.subCategoriesRepository.deleteMany(
-      category.subCategories.getRemovedItems(),
-    )
   }
 
   async delete(category: Category) {

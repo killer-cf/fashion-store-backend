@@ -6,7 +6,6 @@ import { z } from 'zod'
 
 const createCategorySchema = z.object({
   name: z.string(),
-  subCategoriesIds: z.array(z.string()),
 })
 
 type CreateCategoryBody = z.infer<typeof createCategorySchema>
@@ -20,9 +19,9 @@ export class CreateCategoryController {
   @Post()
   @Roles(['ADMIN'])
   async handle(@Body(bodyValidationPipe) body: CreateCategoryBody) {
-    const { name, subCategoriesIds } = body
+    const { name } = body
 
-    const result = await this.createCategory.execute({ name, subCategoriesIds })
+    const result = await this.createCategory.execute({ name })
 
     if (result.isLeft()) {
       throw new BadRequestException()

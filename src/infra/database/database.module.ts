@@ -17,8 +17,6 @@ import { PrismaProductImagesRepository } from './prisma/repositories/prisma-prod
 import { CacheModule } from '../cache/cache.module'
 import { CouponsRepository } from '@/domain/coupon/application/repositories/coupons-repository'
 import { PrismaCouponsRepository } from './prisma/repositories/prisma-coupons-repository'
-import { SubCategoriesRepository } from '@/domain/store/application/repositories/sub-categories-repository'
-import { PrismaSubCategoriesRepository } from './prisma/repositories/prisma-sub-categories-repository'
 import { CategoriesRepository } from '@/domain/store/application/repositories/categories-repository'
 import { PrismaCategoriesRepository } from './prisma/repositories/prisma-category-repository'
 
@@ -41,10 +39,6 @@ import { PrismaCategoriesRepository } from './prisma/repositories/prisma-categor
       useClass: PrismaCouponsRepository,
     },
     {
-      provide: SubCategoriesRepository,
-      useClass: PrismaSubCategoriesRepository,
-    },
-    {
       provide: CategoriesRepository,
       useClass: PrismaCategoriesRepository,
     },
@@ -59,7 +53,6 @@ import { PrismaCategoriesRepository } from './prisma/repositories/prisma-categor
     ImagesRepository,
     ProductImagesRepository,
     CouponsRepository,
-    SubCategoriesRepository,
     CategoriesRepository,
   ],
 })

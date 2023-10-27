@@ -14,8 +14,7 @@ export function makeCategory(
 ) {
   const category = Category.create(
     {
-      name: faker.vehicle.vehicle(),
-      parentCategoryId: undefined,
+      name: faker.word.adjective(),
       ...override,
     },
     id,

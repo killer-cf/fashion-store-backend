@@ -3,14 +3,10 @@ import { Category } from '@/domain/store/enterprise/entities/category'
 import { Injectable } from '@nestjs/common'
 import { PrismaService } from '../prisma.service'
 import { PrismaCategoryMapper } from '../mappers/prisma-category-mapper'
-import { SubCategoriesRepository } from '@/domain/store/application/repositories/sub-categories-repository'
 
 @Injectable()
 export class PrismaCategoriesRepository implements CategoriesRepository {
-  constructor(
-    private prisma: PrismaService,
-    private subCategoriesRepository: SubCategoriesRepository,
-  ) {}
+  constructor(private prisma: PrismaService) {}
 
   async findById(id: string): Promise<Category | null> {
     const category = await this.prisma.category.findUnique({
@@ -41,29 +37,17 @@ export class PrismaCategoriesRepository implements CategoriesRepository {
     await this.prisma.category.create({
       data,
     })
-
-    await this.subCategoriesRepository.createMany(
-      category.subCategories.getItems(),
-    )
   }
 
   async save(category: Category): Promise<void> {
     const data = PrismaCategoryMapper.toPrisma(category)
 
-    Promise.all([
-      this.prisma.category.update({
-        where: {
-          id: data.id,
-        },
-        data,
-      }),
-      this.subCategoriesRepository.createMany(
-        category.subCategories.getNewItems(),
-      ),
-      this.subCategoriesRepository.deleteMany(
-        category.subCategories.getRemovedItems(),
-      ),
-    ])
+    await this.prisma.category.update({
+      where: {
+        id: data.id,
+      },
+      data,
+    })
   }
 
   async delete(category: Category): Promise<void> {

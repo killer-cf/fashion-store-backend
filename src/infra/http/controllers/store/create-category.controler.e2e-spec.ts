@@ -7,7 +7,6 @@ import { Test } from '@nestjs/testing'
 import request from 'supertest'
 import { AdminFactory } from 'test/factories/make-admin'
 import { BrandFactory } from 'test/factories/make-brand'
-import { CategoryFactory } from 'test/factories/make-category'
 import { SubCategoryFactory } from 'test/factories/make-sub-category'
 
 describe('Create category (e2e)', () => {
@@ -15,17 +14,11 @@ describe('Create category (e2e)', () => {
   let prisma: PrismaService
   let jwt: JwtService
   let adminFactory: AdminFactory
-  let categoryFactory: CategoryFactory
 
   beforeAll(async () => {
     const moduleRef = await Test.createTestingModule({
       imports: [AppModule, DatabaseModule],
-      providers: [
-        AdminFactory,
-        BrandFactory,
-        SubCategoryFactory,
-        CategoryFactory,
-      ],
+      providers: [AdminFactory, BrandFactory, SubCategoryFactory],
     }).compile()
 
     app = moduleRef.createNestApplication()
@@ -33,7 +26,6 @@ describe('Create category (e2e)', () => {
     jwt = moduleRef.get(JwtService)
     prisma = moduleRef.get(PrismaService)
     adminFactory = moduleRef.get(AdminFactory)
-    categoryFactory = moduleRef.get(CategoryFactory)
 
     await app.init()
   })
@@ -43,14 +35,11 @@ describe('Create category (e2e)', () => {
 
     const accessToken = jwt.sign({ sub: admin.id.toString(), role: 'ADMIN' })
 
-    const subCategory = await categoryFactory.makePrismaCategory()
-
     const response = await request(app.getHttpServer())
       .post('/categories')
       .set('Authorization', 'Bearer ' + accessToken)
       .send({
         name: 'Novo categoria',
-        subCategoriesIds: [subCategory.id.toString()],
       })
 
     expect(response.statusCode).toBe(201)
@@ -62,14 +51,6 @@ describe('Create category (e2e)', () => {
     })
 
     expect(category).toBeTruthy()
-
-    const subcategoriesOnDataBase = await prisma.category.findMany({
-      where: {
-        parentCategoryId: category?.id,
-      },
-    })
-
-    expect(subcategoriesOnDataBase).toHaveLength(1)
   })
 
   test('[POST] /categories (Unauthorized)', async () => {
@@ -77,14 +58,11 @@ describe('Create category (e2e)', () => {
 
     const accessToken = jwt.sign({ sub: admin.id.toString(), role: 'CLIENT' })
 
-    const subCategory = await categoryFactory.makePrismaCategory()
-
     const response = await request(app.getHttpServer())
       .post('/categories')
       .set('Authorization', 'Bearer ' + accessToken)
       .send({
         name: 'Novo categoria',
-        subCategoriesIds: [subCategory.id.toString()],
       })
 
     expect(response.statusCode).toBe(403)

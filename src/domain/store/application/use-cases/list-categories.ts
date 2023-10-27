@@ -1,12 +1,16 @@
 import { Either, right } from '@/core/either'
 import { CategoriesRepository } from '../repositories/categories-repository'
 import { Injectable } from '@nestjs/common'
-import { CategoryWithSubCategories } from '../../enterprise/entities/value-objects/category-with-sub-categories'
+import { Category } from '../../enterprise/entities/category'
+
+interface ListCategoriesUseCaseRequest {
+  page: number
+}
 
 type ListCategoriesUseCaseResponse = Either<
   null,
   {
-    categories: CategoryWithSubCategories[]
+    categories: Category[]
   }
 >
 
@@ -14,9 +18,10 @@ type ListCategoriesUseCaseResponse = Either<
 export class ListCategoriesUseCase {
   constructor(private categoriesRepository: CategoriesRepository) {}
 
-  async execute(): Promise<ListCategoriesUseCaseResponse> {
-    const categories =
-      await this.categoriesRepository.findManyWithSubCategories()
+  async execute({
+    page,
+  }: ListCategoriesUseCaseRequest): Promise<ListCategoriesUseCaseResponse> {
+    const categories = await this.categoriesRepository.findMany(page)
 
     return right({ categories })
   }
