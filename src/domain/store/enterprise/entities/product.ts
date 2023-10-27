@@ -120,13 +120,14 @@ export class Product extends AggregateRoot<ProductProps> {
   }
 
   static create(
-    props: Optional<ProductProps, 'createdAt' | 'images'>,
+    props: Optional<ProductProps, 'createdAt' | 'images' | 'categories'>,
     id?: UniqueEntityID,
   ) {
     const product = new Product(
       {
         ...props,
         images: props.images ?? new ProductImageList(),
+        categories: props.categories ?? new ProductCategoryList(),
         createdAt: props.createdAt ?? new Date(),
       },
       id,

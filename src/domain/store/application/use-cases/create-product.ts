@@ -10,6 +10,8 @@ import { ProductImage } from '../../enterprise/entities/product-image'
 import { UniqueEntityID } from '@/core/entities/unique-entity-id'
 import { ProductImageList } from '../../enterprise/entities/product-image-list'
 import { ProductStatus } from '../../enterprise/entities/value-objects/product-status'
+import { ProductCategory } from '../../enterprise/entities/product-category'
+import { ProductCategoryList } from '../../enterprise/entities/product-category-list'
 
 interface CreateProductUseCaseRequest {
   name: string
@@ -21,6 +23,7 @@ interface CreateProductUseCaseRequest {
   colors: string[]
   status: 'ACTIVE' | 'DISABLED'
   imageIds: string[]
+  categoriesIds: string[]
 }
 
 type CreateProductUseCaseResponse = Either<
@@ -47,6 +50,7 @@ export class CreateProductUseCase {
     colors,
     status,
     imageIds,
+    categoriesIds,
   }: CreateProductUseCaseRequest): Promise<CreateProductUseCaseResponse> {
     const productWithSameSku = await this.productsRepository.findBySKU(sku)
 
@@ -79,6 +83,15 @@ export class CreateProductUseCase {
     })
 
     product.images = new ProductImageList(productImages)
+
+    const productCategories = categoriesIds.map((categoryId) => {
+      return ProductCategory.create({
+        productId: product.id,
+        categoryId: new UniqueEntityID(categoryId),
+      })
+    })
+
+    product.categories = new ProductCategoryList(productCategories)
 
     await this.productsRepository.create(product)
 

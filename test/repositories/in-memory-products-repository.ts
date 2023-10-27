@@ -4,6 +4,8 @@ import { ProductDetails } from '@/domain/store/enterprise/entities/value-objects
 import { InMemoryBrandsRepository } from './in-memory-brands-repository'
 import { InMemoryProductImagesRepository } from './in-memory-product-images-repository'
 import { InMemoryImagesRepository } from './in-memory-images-repository'
+import { InMemoryProductCategoriesRepository } from './in-memory-product-categories-repository'
+import { InMemoryCategoriesRepository } from './in-memory-categories-repository'
 
 export class InMemoryProductsRepository implements ProductsRepository {
   public items: Product[] = []
@@ -12,6 +14,8 @@ export class InMemoryProductsRepository implements ProductsRepository {
     private productImagesRepository: InMemoryProductImagesRepository,
     private brandsRepository: InMemoryBrandsRepository,
     private imagesRepository: InMemoryImagesRepository,
+    private productCategoriesRepository: InMemoryProductCategoriesRepository,
+    private categoriesRepository: InMemoryCategoriesRepository,
   ) {}
 
   async findById(id: string): Promise<Product | null> {
@@ -107,6 +111,7 @@ export class InMemoryProductsRepository implements ProductsRepository {
     this.items.push(product)
 
     this.productImagesRepository.createMany(product.images.getItems())
+    this.productCategoriesRepository.createMany(product.categories.getItems())
   }
 
   async save(product: Product): Promise<void> {
