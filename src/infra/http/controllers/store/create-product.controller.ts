@@ -20,6 +20,7 @@ const createProductSchema = z.object({
   model: z.string(),
   colors: z.array(z.string()).min(1),
   imageIds: z.array(z.string()).min(1),
+  categoriesIds: z.array(z.string()).min(1),
   status: z.enum(['ACTIVE', 'DISABLED']),
 })
 
@@ -43,6 +44,7 @@ export class CreateProductController {
       model,
       colors,
       imageIds,
+      categoriesIds,
       status,
     } = body
 
@@ -55,6 +57,7 @@ export class CreateProductController {
       model,
       colors,
       imageIds,
+      categoriesIds,
       status,
     })
 
