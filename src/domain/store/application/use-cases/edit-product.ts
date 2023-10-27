@@ -8,6 +8,9 @@ import { ProductImage } from '../../enterprise/entities/product-image'
 import { UniqueEntityID } from '@/core/entities/unique-entity-id'
 import { ProductImageList } from '../../enterprise/entities/product-image-list'
 import { ProductImagesRepository } from '../repositories/product-images-repository'
+import { ProductCategoriesRepository } from '../repositories/product-categories-repository'
+import { ProductCategoryList } from '../../enterprise/entities/product-category-list'
+import { ProductCategory } from '../../enterprise/entities/product-category'
 
 interface EditProductUseCaseRequest {
   adminId: string
@@ -17,6 +20,7 @@ interface EditProductUseCaseRequest {
   colors: string[]
   price: number
   imageIds: string[]
+  categoriesIds: string[]
 }
 
 type EditProductUseCaseResponse = Either<
@@ -31,6 +35,7 @@ export class EditProductUseCase {
     private productsRepository: ProductsRepository,
     private adminsRepository: AdminsRepository,
     private productImagesRepository: ProductImagesRepository,
+    private productCategoriesRepository: ProductCategoriesRepository,
   ) {}
 
   async execute({
@@ -41,6 +46,7 @@ export class EditProductUseCase {
     colors,
     price,
     imageIds,
+    categoriesIds,
   }: EditProductUseCaseRequest): Promise<EditProductUseCaseResponse> {
     const admin = await this.adminsRepository.findById(adminId)
 
@@ -70,7 +76,27 @@ export class EditProductUseCase {
 
     productImageList.update(productImages)
 
+    const currentProductCategories =
+      await this.productCategoriesRepository.findManyByProductId(
+        product.id.toString(),
+      )
+
+    const productCategoryList = new ProductCategoryList(
+      currentProductCategories,
+    )
+
+    const productCategories = categoriesIds.map((categoryId) => {
+      return ProductCategory.create({
+        productId: product.id,
+        categoryId: new UniqueEntityID(categoryId),
+      })
+    })
+
+    productCategoryList.update(productCategories)
+
     product.images = productImageList
+    product.categories = productCategoryList
+
     product.name = name
     product.description = description
     product.colors = colors

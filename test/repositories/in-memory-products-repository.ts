@@ -121,5 +121,12 @@ export class InMemoryProductsRepository implements ProductsRepository {
 
     this.productImagesRepository.deleteMany(product.images.getRemovedItems())
     this.productImagesRepository.createMany(product.images.getNewItems())
+
+    this.productCategoriesRepository.deleteMany(
+      product.categories.getRemovedItems(),
+    )
+    this.productCategoriesRepository.createMany(
+      product.categories.getNewItems(),
+    )
   }
 }

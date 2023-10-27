@@ -9,8 +9,13 @@ import { UniqueEntityID } from '@/core/entities/unique-entity-id'
 import { InMemoryProductImagesRepository } from 'test/repositories/in-memory-product-images-repository'
 import { InMemoryBrandsRepository } from 'test/repositories/in-memory-brands-repository'
 import { InMemoryImagesRepository } from 'test/repositories/in-memory-images-repository'
+import { InMemoryProductCategoriesRepository } from 'test/repositories/in-memory-product-categories-repository'
+import { InMemoryCategoriesRepository } from 'test/repositories/in-memory-categories-repository'
+import { makeProductCategory } from 'test/factories/make-product-category'
 
 describe('Edit product', () => {
+  let inMemoryProductCategoriesRepository: InMemoryProductCategoriesRepository
+  let inMemoryCategoriesRepository: InMemoryCategoriesRepository
   let inMemoryProductImagesRepository: InMemoryProductImagesRepository
   let inMemoryProductsRepository: InMemoryProductsRepository
   let inMemoryAdminsRepository: InMemoryAdminsRepository
@@ -19,6 +24,9 @@ describe('Edit product', () => {
   let sut: EditProductUseCase
 
   beforeEach(() => {
+    inMemoryProductCategoriesRepository =
+      new InMemoryProductCategoriesRepository()
+    inMemoryCategoriesRepository = new InMemoryCategoriesRepository()
     inMemoryProductImagesRepository = new InMemoryProductImagesRepository()
     inMemoryBrandsRepository = new InMemoryBrandsRepository()
     inMemoryImagesRepository = new InMemoryImagesRepository()
@@ -26,12 +34,15 @@ describe('Edit product', () => {
       inMemoryProductImagesRepository,
       inMemoryBrandsRepository,
       inMemoryImagesRepository,
+      inMemoryProductCategoriesRepository,
+      inMemoryCategoriesRepository,
     )
     inMemoryAdminsRepository = new InMemoryAdminsRepository()
     sut = new EditProductUseCase(
       inMemoryProductsRepository,
       inMemoryAdminsRepository,
       inMemoryProductImagesRepository,
+      inMemoryProductCategoriesRepository,
     )
   })
 
@@ -53,6 +64,17 @@ describe('Edit product', () => {
       }),
     )
 
+    inMemoryProductCategoriesRepository.items.push(
+      makeProductCategory({
+        productId: product.id,
+        categoryId: new UniqueEntityID('1'),
+      }),
+      makeProductCategory({
+        productId: product.id,
+        categoryId: new UniqueEntityID('2'),
+      }),
+    )
+
     const result = await sut.execute({
       adminId: admin.id.toString(),
       productId: product.id.toString(),
@@ -61,6 +83,7 @@ describe('Edit product', () => {
       colors: ['green', 'blue'],
       price: 1200,
       imageIds: ['1', '3'],
+      categoriesIds: ['1', '3'],
     })
 
     expect(result.isRight()).toBe(true)
@@ -85,6 +108,17 @@ describe('Edit product', () => {
           expect.objectContaining({ imageId: new UniqueEntityID('3') }),
         ]),
       )
+      expect(
+        inMemoryProductsRepository.items[0].categories.currentItems,
+      ).toHaveLength(2)
+      expect(
+        inMemoryProductsRepository.items[0].categories.currentItems,
+      ).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({ categoryId: new UniqueEntityID('1') }),
+          expect.objectContaining({ categoryId: new UniqueEntityID('3') }),
+        ]),
+      )
     }
   })
 
@@ -101,6 +135,7 @@ describe('Edit product', () => {
       colors: ['green', 'blue'],
       price: 1200,
       imageIds: ['1', '2'],
+      categoriesIds: ['1', '3'],
     })
 
     expect(result.isLeft()).toBe(true)
@@ -133,6 +168,7 @@ describe('Edit product', () => {
       colors: ['green', 'blue'],
       price: 1200,
       imageIds: ['1', '3'],
+      categoriesIds: ['1', '3'],
     })
 
     expect(result.isRight()).toBe(true)
@@ -142,6 +178,13 @@ describe('Edit product', () => {
         expect.arrayContaining([
           expect.objectContaining({ imageId: new UniqueEntityID('1') }),
           expect.objectContaining({ imageId: new UniqueEntityID('3') }),
+        ]),
+      )
+
+      expect(inMemoryProductCategoriesRepository.items).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({ categoryId: new UniqueEntityID('1') }),
+          expect.objectContaining({ categoryId: new UniqueEntityID('3') }),
         ]),
       )
     }
