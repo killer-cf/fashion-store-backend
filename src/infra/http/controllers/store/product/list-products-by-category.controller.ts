@@ -7,9 +7,9 @@ import {
   Query,
 } from '@nestjs/common'
 import { z } from 'zod'
-import { ProductPresenter } from '../../presenters/product-presenter'
 import { Public } from '@/infra/auth/public.decorator'
 import { ListProductsByCategoryUseCase } from '@/domain/store/application/use-cases/list-products-by-category'
+import { ProductPresenter } from '@/infra/http/presenters/product-presenter'
 
 const pageQueryParamSchema = z
   .string()

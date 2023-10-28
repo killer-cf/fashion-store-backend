@@ -7,7 +7,6 @@ import { Test } from '@nestjs/testing'
 import request from 'supertest'
 import { AdminFactory } from 'test/factories/make-admin'
 import { BrandFactory } from 'test/factories/make-brand'
-import { SubCategoryFactory } from 'test/factories/make-sub-category'
 
 describe('Create category (e2e)', () => {
   let app: INestApplication
@@ -18,7 +17,7 @@ describe('Create category (e2e)', () => {
   beforeAll(async () => {
     const moduleRef = await Test.createTestingModule({
       imports: [AppModule, DatabaseModule],
-      providers: [AdminFactory, BrandFactory, SubCategoryFactory],
+      providers: [AdminFactory, BrandFactory],
     }).compile()
 
     app = moduleRef.createNestApplication()

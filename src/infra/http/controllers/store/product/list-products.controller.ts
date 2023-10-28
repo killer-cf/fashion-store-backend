@@ -2,8 +2,8 @@ import { ListProductsUseCase } from '@/domain/store/application/use-cases/list-p
 import { ZodValidationPipe } from '@/infra/pipes/zod-validation-pipe'
 import { BadRequestException, Controller, Get, Query } from '@nestjs/common'
 import { z } from 'zod'
-import { ProductPresenter } from '../../presenters/product-presenter'
 import { Public } from '@/infra/auth/public.decorator'
+import { ProductPresenter } from '@/infra/http/presenters/product-presenter'
 
 const pageQueryParamSchema = z
   .string()

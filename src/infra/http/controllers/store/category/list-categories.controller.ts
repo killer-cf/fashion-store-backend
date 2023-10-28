@@ -2,8 +2,8 @@ import { ListCategoriesUseCase } from '@/domain/store/application/use-cases/list
 import { ZodValidationPipe } from '@/infra/pipes/zod-validation-pipe'
 import { BadRequestException, Controller, Get, Query } from '@nestjs/common'
 import { z } from 'zod'
-import { CategoryPresenter } from '../../presenters/category-presenter'
 import { Public } from '@/infra/auth/public.decorator'
+import { CategoryPresenter } from '@/infra/http/presenters/category-presenter'
 
 const pageQueryParamSchema = z
   .string()

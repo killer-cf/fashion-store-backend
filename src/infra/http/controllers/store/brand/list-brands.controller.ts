@@ -1,9 +1,9 @@
-import { ListProductsUseCase } from '@/domain/store/application/use-cases/list-products'
+import { ListBrandsUseCase } from '@/domain/store/application/use-cases/list-brands'
 import { ZodValidationPipe } from '@/infra/pipes/zod-validation-pipe'
 import { BadRequestException, Controller, Get, Query } from '@nestjs/common'
 import { z } from 'zod'
-import { ProductPresenter } from '../../presenters/product-presenter'
 import { Roles } from '@/infra/auth/roles.decorator'
+import { BrandPresenter } from '@/infra/http/presenters/brand-presenter'
 
 const pageQueryParamSchema = z
   .string()
@@ -16,26 +16,25 @@ const queryValidationPipe = new ZodValidationPipe(pageQueryParamSchema)
 
 type PageQueryParamSchema = z.infer<typeof pageQueryParamSchema>
 
-@Controller('/admin/products')
-export class ListProductsAdminController {
-  constructor(private listProducts: ListProductsUseCase) {}
+@Controller('/brands')
+export class ListBrandsController {
+  constructor(private listBrands: ListBrandsUseCase) {}
 
   @Get()
   @Roles(['ADMIN'])
   async handle(@Query('page', queryValidationPipe) page: PageQueryParamSchema) {
-    const result = await this.listProducts.execute({
+    const result = await this.listBrands.execute({
       page,
-      isAdmin: true,
     })
 
     if (result.isLeft()) {
       throw new BadRequestException()
     }
 
-    const products = result.value.products.map((product) =>
-      ProductPresenter.toHTTP(product),
+    const brands = result.value.brands.map((brand) =>
+      BrandPresenter.toHTTP(brand),
     )
 
-    return { products }
+    return { brands }
   }
 }
