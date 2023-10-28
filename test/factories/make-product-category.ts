@@ -31,13 +31,11 @@ export class ProductCategoryFactory {
   ): Promise<ProductCategory> {
     const productCategory = makeProductCategory(data)
 
-    await this.prisma.product.update({
-      where: {
-        id: productCategory.productId.toString(),
+    await this.prisma.productCategories.create({
+      data: {
+        productId: productCategory.productId.toString(),
+        categoryId: productCategory.categoryId.toString(),
       },
-      // data: {
-      //   : productCategory.parentCategoryId.toString(),
-      // },
     })
 
     return productCategory
