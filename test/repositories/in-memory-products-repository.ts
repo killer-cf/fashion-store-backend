@@ -1,4 +1,7 @@
-import { ProductsRepository } from '@/domain/store/application/repositories/products-repository'
+import {
+  FindManyByCategoryProps,
+  ProductsRepository,
+} from '@/domain/store/application/repositories/products-repository'
 import { Product } from '@/domain/store/enterprise/entities/product'
 import { ProductDetails } from '@/domain/store/enterprise/entities/value-objects/product-details'
 import { InMemoryBrandsRepository } from './in-memory-brands-repository'
@@ -105,6 +108,28 @@ export class InMemoryProductsRepository implements ProductsRepository {
       .slice((page - 1) * 20, page * 20)
 
     return products
+  }
+
+  async findManyByCategoryId({
+    page,
+    search,
+    categoryId,
+  }: FindManyByCategoryProps): Promise<Product[]> {
+    let products = this.items
+      .filter((product) =>
+        product.categories
+          .getItems()
+          .some((category) => category.categoryId.toString() === categoryId),
+      )
+      .filter((product) => product.isActive() === true)
+
+    if (search.split('').length > 0) {
+      products = products.filter((product) =>
+        product.name.toLocaleLowerCase().includes(search.toLocaleLowerCase()),
+      )
+    }
+
+    return products.slice((page - 1) * 20, page * 20)
   }
 
   async create(product: Product): Promise<void> {
