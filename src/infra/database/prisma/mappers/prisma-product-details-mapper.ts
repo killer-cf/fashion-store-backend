@@ -1,12 +1,24 @@
 import { UniqueEntityID } from '@/core/entities/unique-entity-id'
 import { ProductDetails } from '@/domain/store/enterprise/entities/value-objects/product-details'
 import { ProductStatus } from '@/domain/store/enterprise/entities/value-objects/product-status'
-import { Brand, Image, Product as PrismaProduct } from '@prisma/client'
+import {
+  Product as PrismaProduct,
+  Brand,
+  Image,
+  ProductCategories,
+  Category,
+} from '@prisma/client'
 import { PrismaImageMapper } from './prisma-image-mapper'
+import { PrismaCategoryMapper } from './prisma-category-mapper'
+
+type ProductCategoriesWithCategory = ProductCategories & {
+  category: Category
+}
 
 type PrismaProductDetails = PrismaProduct & {
   brand: Brand
   images: Image[]
+  product_categories: ProductCategoriesWithCategory[]
 }
 
 export class PrismaProductDetailsMapper {
@@ -23,6 +35,9 @@ export class PrismaProductDetailsMapper {
       brandId: new UniqueEntityID(raw.brand_id),
       brandName: raw.brand.name,
       images: raw.images.map(PrismaImageMapper.toDomain),
+      categories: raw.product_categories.map((pc) =>
+        PrismaCategoryMapper.toDomain(pc.category),
+      ),
       createdAt: raw.createdAt,
       updatedAt: raw.updatedAt,
     })

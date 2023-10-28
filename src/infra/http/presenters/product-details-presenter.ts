@@ -1,5 +1,6 @@
 import { ProductDetails } from '@/domain/store/enterprise/entities/value-objects/product-details'
 import { ImagePresenter } from './image-presenter'
+import { CategoryPresenter } from './category-presenter'
 
 export class ProductDetailsPresenter {
   static toHTTP(product: ProductDetails) {
@@ -16,6 +17,7 @@ export class ProductDetailsPresenter {
         name: product.brandName,
       },
       images: product.images.map(ImagePresenter.toHTTP),
+      categories: product.categories.map(CategoryPresenter.toHTTP),
     }
   }
 }

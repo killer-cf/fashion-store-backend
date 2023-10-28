@@ -69,6 +69,11 @@ export class PrismaProductsRepository implements ProductsRepository {
       include: {
         brand: true,
         images: true,
+        product_categories: {
+          include: {
+            category: true,
+          },
+        },
       },
     })
 

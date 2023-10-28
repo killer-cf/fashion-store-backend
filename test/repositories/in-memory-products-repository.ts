@@ -67,6 +67,25 @@ export class InMemoryProductsRepository implements ProductsRepository {
       return image
     })
 
+    const productCategories =
+      await this.productCategoriesRepository.findManyByProductId(
+        product.id.toString(),
+      )
+
+    const categories = productCategories.map((productCategory) => {
+      const category = this.categoriesRepository.items.find((category) =>
+        category.id.equals(productCategory.categoryId),
+      )
+
+      if (!category) {
+        throw new Error(
+          `category with id ${productCategory.id.toString()} does not exist`,
+        )
+      }
+
+      return category
+    })
+
     const productDetails = ProductDetails.create({
       productId: product.id,
       brandId: product.brandId,
@@ -78,9 +97,10 @@ export class InMemoryProductsRepository implements ProductsRepository {
       name: product.name,
       price: product.price,
       sku: product.sku,
-      images,
       createdAt: product.createdAt,
       updatedAt: product.updatedAt,
+      images,
+      categories,
     })
 
     return productDetails
