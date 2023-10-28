@@ -1,4 +1,7 @@
-import { ProductsRepository } from '@/domain/store/application/repositories/products-repository'
+import {
+  FindManyByCategoryProps,
+  ProductsRepository,
+} from '@/domain/store/application/repositories/products-repository'
 import { Product } from '@/domain/store/enterprise/entities/product'
 import { Injectable } from '@nestjs/common'
 import { PrismaService } from '../prisma.service'
@@ -81,6 +84,37 @@ export class PrismaProductsRepository implements ProductsRepository {
     )
 
     return productDetails
+  }
+
+  async findManyByCategoryId({
+    page,
+    search,
+    categoryId,
+  }: FindManyByCategoryProps): Promise<Product[]> {
+    const products = await this.prisma.product.findMany({
+      orderBy: {
+        createdAt: 'desc',
+      },
+      where: {
+        name: {
+          contains: search,
+        },
+        status: 'ACTIVE',
+        product_categories: {
+          some: {
+            categoryId,
+          },
+        },
+      },
+      take: 20,
+      skip: (page - 1) * 20,
+      include: {
+        brand: true,
+        product_categories: true,
+      },
+    })
+
+    return products.map(PrismaProductMapper.toDomain)
   }
 
   async listAll(page: number): Promise<Product[]> {

@@ -36,6 +36,8 @@ import { ListCategoriesController } from './list-categories.controller'
 import { ListCategoriesUseCase } from '@/domain/store/application/use-cases/list-categories'
 import { EditProductController } from './edit-product.controller'
 import { EditProductUseCase } from '@/domain/store/application/use-cases/edit-product'
+import { ListProductsByCategoryController } from './list-products-by-category.controller'
+import { ListProductsByCategoryUseCase } from '@/domain/store/application/use-cases/list-products-by-category'
 
 @Module({
   imports: [DatabaseModule, CryptographyModule, StorageModule],
@@ -58,6 +60,7 @@ import { EditProductUseCase } from '@/domain/store/application/use-cases/edit-pr
     EditCategoryController,
     ListCategoriesController,
     EditProductController,
+    ListProductsByCategoryController,
   ],
   providers: [
     CreateProductUseCase,
@@ -76,6 +79,7 @@ import { EditProductUseCase } from '@/domain/store/application/use-cases/edit-pr
     EditCategoryUseCase,
     ListCategoriesUseCase,
     EditProductUseCase,
+    ListProductsByCategoryUseCase,
   ],
 })
 export class StoreControllersModule {}
