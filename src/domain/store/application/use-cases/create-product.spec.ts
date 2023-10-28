@@ -5,8 +5,12 @@ import { Brand } from '../../enterprise/entities/brand'
 import { UniqueEntityID } from '@/core/entities/unique-entity-id'
 import { InMemoryProductImagesRepository } from 'test/repositories/in-memory-product-images-repository'
 import { InMemoryImagesRepository } from 'test/repositories/in-memory-images-repository'
+import { InMemoryProductCategoriesRepository } from 'test/repositories/in-memory-product-categories-repository'
+import { InMemoryCategoriesRepository } from 'test/repositories/in-memory-categories-repository'
 
 describe('Create Product', () => {
+  let inMemoryProductCategoriesRepository: InMemoryProductCategoriesRepository
+  let inMemoryCategoriesRepository: InMemoryCategoriesRepository
   let inMemoryProductImagesRepository: InMemoryProductImagesRepository
   let inMemoryProductsRepository: InMemoryProductsRepository
   let inMemoryBrandsRepository: InMemoryBrandsRepository
@@ -14,6 +18,9 @@ describe('Create Product', () => {
   let sut: CreateProductUseCase
 
   beforeEach(() => {
+    inMemoryProductCategoriesRepository =
+      new InMemoryProductCategoriesRepository()
+    inMemoryCategoriesRepository = new InMemoryCategoriesRepository()
     inMemoryImagesRepository = new InMemoryImagesRepository()
     inMemoryBrandsRepository = new InMemoryBrandsRepository()
     inMemoryProductImagesRepository = new InMemoryProductImagesRepository()
@@ -21,6 +28,8 @@ describe('Create Product', () => {
       inMemoryProductImagesRepository,
       inMemoryBrandsRepository,
       inMemoryImagesRepository,
+      inMemoryProductCategoriesRepository,
+      inMemoryCategoriesRepository,
     )
     sut = new CreateProductUseCase(
       inMemoryProductsRepository,
@@ -43,6 +52,7 @@ describe('Create Product', () => {
       name: 'Xiaomi 14T',
       sku: 'XI14TGR',
       imageIds: ['1', '2'],
+      categoriesIds: ['10', '11'],
     })
 
     expect(result.isRight()).toBe(true)
@@ -52,6 +62,12 @@ describe('Create Product', () => {
       expect(inMemoryProductsRepository.items[0].images.currentItems).toEqual([
         expect.objectContaining({ imageId: new UniqueEntityID('1') }),
         expect.objectContaining({ imageId: new UniqueEntityID('2') }),
+      ])
+      expect(
+        inMemoryProductsRepository.items[0].categories.currentItems,
+      ).toEqual([
+        expect.objectContaining({ categoryId: new UniqueEntityID('10') }),
+        expect.objectContaining({ categoryId: new UniqueEntityID('11') }),
       ])
     }
   })
@@ -71,6 +87,7 @@ describe('Create Product', () => {
       name: 'Xiaomi 14T',
       sku: 'XI14TGR',
       imageIds: ['1', '2'],
+      categoriesIds: ['10', '11'],
     })
 
     expect(result.isRight()).toBe(true)
@@ -82,6 +99,17 @@ describe('Create Product', () => {
         }),
         expect.objectContaining({
           imageId: new UniqueEntityID('2'),
+        }),
+      ]),
+    )
+    expect(inMemoryProductCategoriesRepository.items).toHaveLength(2)
+    expect(inMemoryProductCategoriesRepository.items).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          categoryId: new UniqueEntityID('10'),
+        }),
+        expect.objectContaining({
+          categoryId: new UniqueEntityID('11'),
         }),
       ]),
     )

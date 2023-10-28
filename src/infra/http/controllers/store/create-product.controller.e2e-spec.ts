@@ -7,6 +7,7 @@ import { Test } from '@nestjs/testing'
 import request from 'supertest'
 import { AdminFactory } from 'test/factories/make-admin'
 import { BrandFactory } from 'test/factories/make-brand'
+import { CategoryFactory } from 'test/factories/make-category'
 import { ImageFactory } from 'test/factories/make-image'
 
 describe('Create product (e2e)', () => {
@@ -16,11 +17,12 @@ describe('Create product (e2e)', () => {
   let adminFactory: AdminFactory
   let brandFactory: BrandFactory
   let imageFactory: ImageFactory
+  let categoryFactory: CategoryFactory
 
   beforeAll(async () => {
     const moduleRef = await Test.createTestingModule({
       imports: [AppModule, DatabaseModule],
-      providers: [AdminFactory, BrandFactory, ImageFactory],
+      providers: [AdminFactory, BrandFactory, ImageFactory, CategoryFactory],
     }).compile()
 
     app = moduleRef.createNestApplication()
@@ -30,6 +32,7 @@ describe('Create product (e2e)', () => {
     adminFactory = moduleRef.get(AdminFactory)
     brandFactory = moduleRef.get(BrandFactory)
     imageFactory = moduleRef.get(ImageFactory)
+    categoryFactory = moduleRef.get(CategoryFactory)
 
     await app.init()
   })
@@ -37,10 +40,10 @@ describe('Create product (e2e)', () => {
   test('[POST] /products', async () => {
     const admin = await adminFactory.makePrismaAdmin({})
     const brand = await brandFactory.makePrismaBrand({ name: 'Xiaomi' })
+    const image = await imageFactory.makePrismaImage()
+    const category = await categoryFactory.makePrismaCategory()
 
     const accessToken = jwt.sign({ sub: admin.id.toString(), role: 'ADMIN' })
-
-    const image = await imageFactory.makePrismaImage()
 
     const response = await request(app.getHttpServer())
       .post('/products')
@@ -54,6 +57,7 @@ describe('Create product (e2e)', () => {
         description: 'Descrição do produto',
         colors: ['red'],
         imageIds: [image.id.toString()],
+        categoriesIds: [category.id.toString()],
         status: 'ACTIVE',
       })
 
@@ -76,6 +80,14 @@ describe('Create product (e2e)', () => {
     })
 
     expect(imageOnDataBase).toHaveLength(1)
+
+    const productCategoryOnDataBase = await prisma.productCategories.findMany({
+      where: {
+        productId: product?.id,
+      },
+    })
+
+    expect(productCategoryOnDataBase).toHaveLength(1)
   })
 
   test('[POST] /products (Unauthorized)', async () => {

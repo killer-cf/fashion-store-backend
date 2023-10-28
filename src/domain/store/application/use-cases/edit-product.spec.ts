@@ -1,24 +1,28 @@
 import { EditProductUseCase } from './edit-product'
 import { InMemoryProductsRepository } from 'test/repositories/in-memory-products-repository'
-import { InMemoryAdminsRepository } from 'test/repositories/in-memory-admins-repository'
-import { makeAdmin } from 'test/factories/make-admin'
 import { makeProduct } from 'test/factories/make-product'
-import { NotAllowedError } from '@/core/errors/not-allowed-error'
 import { makeProductImage } from 'test/factories/make-product-image'
 import { UniqueEntityID } from '@/core/entities/unique-entity-id'
 import { InMemoryProductImagesRepository } from 'test/repositories/in-memory-product-images-repository'
 import { InMemoryBrandsRepository } from 'test/repositories/in-memory-brands-repository'
 import { InMemoryImagesRepository } from 'test/repositories/in-memory-images-repository'
+import { InMemoryProductCategoriesRepository } from 'test/repositories/in-memory-product-categories-repository'
+import { InMemoryCategoriesRepository } from 'test/repositories/in-memory-categories-repository'
+import { makeProductCategory } from 'test/factories/make-product-category'
 
 describe('Edit product', () => {
+  let inMemoryProductCategoriesRepository: InMemoryProductCategoriesRepository
+  let inMemoryCategoriesRepository: InMemoryCategoriesRepository
   let inMemoryProductImagesRepository: InMemoryProductImagesRepository
   let inMemoryProductsRepository: InMemoryProductsRepository
-  let inMemoryAdminsRepository: InMemoryAdminsRepository
   let inMemoryBrandsRepository: InMemoryBrandsRepository
   let inMemoryImagesRepository: InMemoryImagesRepository
   let sut: EditProductUseCase
 
   beforeEach(() => {
+    inMemoryProductCategoriesRepository =
+      new InMemoryProductCategoriesRepository()
+    inMemoryCategoriesRepository = new InMemoryCategoriesRepository()
     inMemoryProductImagesRepository = new InMemoryProductImagesRepository()
     inMemoryBrandsRepository = new InMemoryBrandsRepository()
     inMemoryImagesRepository = new InMemoryImagesRepository()
@@ -26,20 +30,19 @@ describe('Edit product', () => {
       inMemoryProductImagesRepository,
       inMemoryBrandsRepository,
       inMemoryImagesRepository,
+      inMemoryProductCategoriesRepository,
+      inMemoryCategoriesRepository,
     )
-    inMemoryAdminsRepository = new InMemoryAdminsRepository()
     sut = new EditProductUseCase(
       inMemoryProductsRepository,
-      inMemoryAdminsRepository,
       inMemoryProductImagesRepository,
+      inMemoryProductCategoriesRepository,
     )
   })
 
   it('should be able to edit product', async () => {
-    const admin = makeAdmin()
     const product = makeProduct()
 
-    inMemoryAdminsRepository.create(admin)
     inMemoryProductsRepository.create(product)
 
     inMemoryProductImagesRepository.items.push(
@@ -53,14 +56,25 @@ describe('Edit product', () => {
       }),
     )
 
+    inMemoryProductCategoriesRepository.items.push(
+      makeProductCategory({
+        productId: product.id,
+        categoryId: new UniqueEntityID('1'),
+      }),
+      makeProductCategory({
+        productId: product.id,
+        categoryId: new UniqueEntityID('2'),
+      }),
+    )
+
     const result = await sut.execute({
-      adminId: admin.id.toString(),
       productId: product.id.toString(),
       name: 'Novo nome do produto',
       description: 'nova descrição do produto',
       colors: ['green', 'blue'],
       price: 1200,
       imageIds: ['1', '3'],
+      categoriesIds: ['1', '3'],
     })
 
     expect(result.isRight()).toBe(true)
@@ -85,33 +99,23 @@ describe('Edit product', () => {
           expect.objectContaining({ imageId: new UniqueEntityID('3') }),
         ]),
       )
+      expect(
+        inMemoryProductsRepository.items[0].categories.currentItems,
+      ).toHaveLength(2)
+      expect(
+        inMemoryProductsRepository.items[0].categories.currentItems,
+      ).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({ categoryId: new UniqueEntityID('1') }),
+          expect.objectContaining({ categoryId: new UniqueEntityID('3') }),
+        ]),
+      )
     }
   })
 
-  it('should not be able to edit product if does not admin', async () => {
-    const product = makeProduct()
-
-    inMemoryProductsRepository.create(product)
-
-    const result = await sut.execute({
-      adminId: 'id-nao-admin',
-      productId: product.id.toString(),
-      name: 'Novo nome do produto',
-      description: 'nova descrição do produto',
-      colors: ['green', 'blue'],
-      price: 1200,
-      imageIds: ['1', '2'],
-    })
-
-    expect(result.isLeft()).toBe(true)
-    expect(result.value).toBeInstanceOf(NotAllowedError)
-  })
-
   it('should sync new and removed images when editing a product', async () => {
-    const admin = makeAdmin()
     const product = makeProduct()
 
-    inMemoryAdminsRepository.create(admin)
     inMemoryProductsRepository.create(product)
 
     inMemoryProductImagesRepository.items.push(
@@ -126,13 +130,13 @@ describe('Edit product', () => {
     )
 
     const result = await sut.execute({
-      adminId: admin.id.toString(),
       productId: product.id.toString(),
       name: 'Novo nome do produto',
       description: 'nova descrição do produto',
       colors: ['green', 'blue'],
       price: 1200,
       imageIds: ['1', '3'],
+      categoriesIds: ['1', '3'],
     })
 
     expect(result.isRight()).toBe(true)
@@ -142,6 +146,13 @@ describe('Edit product', () => {
         expect.arrayContaining([
           expect.objectContaining({ imageId: new UniqueEntityID('1') }),
           expect.objectContaining({ imageId: new UniqueEntityID('3') }),
+        ]),
+      )
+
+      expect(inMemoryProductCategoriesRepository.items).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({ categoryId: new UniqueEntityID('1') }),
+          expect.objectContaining({ categoryId: new UniqueEntityID('3') }),
         ]),
       )
     }

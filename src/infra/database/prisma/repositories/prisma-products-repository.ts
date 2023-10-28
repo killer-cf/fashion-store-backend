@@ -1,4 +1,7 @@
-import { ProductsRepository } from '@/domain/store/application/repositories/products-repository'
+import {
+  FindManyByCategoryProps,
+  ProductsRepository,
+} from '@/domain/store/application/repositories/products-repository'
 import { Product } from '@/domain/store/enterprise/entities/product'
 import { Injectable } from '@nestjs/common'
 import { PrismaService } from '../prisma.service'
@@ -7,13 +10,15 @@ import { ProductImagesRepository } from '@/domain/store/application/repositories
 import { ProductDetails } from '@/domain/store/enterprise/entities/value-objects/product-details'
 import { PrismaProductDetailsMapper } from '../mappers/prisma-product-details-mapper'
 import { CacheRepository } from '@/infra/cache/cache-repository'
+import { ProductCategoriesRepository } from '@/domain/store/application/repositories/product-categories-repository'
 
 @Injectable()
 export class PrismaProductsRepository implements ProductsRepository {
   constructor(
     private prisma: PrismaService,
-    private productImagesRepository: ProductImagesRepository,
     private cache: CacheRepository,
+    private productImagesRepository: ProductImagesRepository,
+    private productCategoriesRepository: ProductCategoriesRepository,
   ) {}
 
   async findBySKU(sku: string): Promise<Product | null> {
@@ -64,6 +69,11 @@ export class PrismaProductsRepository implements ProductsRepository {
       include: {
         brand: true,
         images: true,
+        product_categories: {
+          include: {
+            category: true,
+          },
+        },
       },
     })
 
@@ -79,6 +89,37 @@ export class PrismaProductsRepository implements ProductsRepository {
     )
 
     return productDetails
+  }
+
+  async findManyByCategoryId({
+    page,
+    search,
+    categoryId,
+  }: FindManyByCategoryProps): Promise<Product[]> {
+    const products = await this.prisma.product.findMany({
+      orderBy: {
+        createdAt: 'desc',
+      },
+      where: {
+        name: {
+          contains: search,
+        },
+        status: 'ACTIVE',
+        product_categories: {
+          some: {
+            categoryId,
+          },
+        },
+      },
+      take: 20,
+      skip: (page - 1) * 20,
+      include: {
+        brand: true,
+        product_categories: true,
+      },
+    })
+
+    return products.map(PrismaProductMapper.toDomain)
   }
 
   async listAll(page: number): Promise<Product[]> {
@@ -121,7 +162,12 @@ export class PrismaProductsRepository implements ProductsRepository {
       data,
     })
 
-    await this.productImagesRepository.createMany(product.images.getItems())
+    Promise.all([
+      this.productImagesRepository.createMany(product.images.getItems()),
+      this.productCategoriesRepository.createMany(
+        product.categories.getItems(),
+      ),
+    ])
   }
 
   async save(product: Product): Promise<void> {
@@ -136,6 +182,12 @@ export class PrismaProductsRepository implements ProductsRepository {
       }),
       this.productImagesRepository.createMany(product.images.getNewItems()),
       this.productImagesRepository.deleteMany(product.images.getRemovedItems()),
+      this.productCategoriesRepository.createMany(
+        product.categories.getNewItems(),
+      ),
+      this.productCategoriesRepository.deleteMany(
+        product.categories.getRemovedItems(),
+      ),
       this.cache.delete(`product:${product.id.toString()}:details`),
     ])
   }

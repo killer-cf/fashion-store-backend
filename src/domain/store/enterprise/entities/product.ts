@@ -1,8 +1,9 @@
-import { Entity } from '@/core/entities/entity'
 import { UniqueEntityID } from '@/core/entities/unique-entity-id'
 import { Optional } from '@/core/types/optional'
 import { ProductImageList } from './product-image-list'
 import { ProductStatus, Status } from './value-objects/product-status'
+import { ProductCategoryList } from './product-category-list'
+import { AggregateRoot } from '@/core/entities/aggregate-root'
 
 export interface ProductProps {
   name: string
@@ -11,6 +12,7 @@ export interface ProductProps {
   sku: string
   model: string
   colors: string[]
+  categories: ProductCategoryList
   status: ProductStatus
   images: ProductImageList
   brandId: UniqueEntityID
@@ -18,7 +20,7 @@ export interface ProductProps {
   updatedAt?: Date | null
 }
 
-export class Product extends Entity<ProductProps> {
+export class Product extends AggregateRoot<ProductProps> {
   get name() {
     return this.props.name
   }
@@ -60,6 +62,15 @@ export class Product extends Entity<ProductProps> {
 
   set colors(colors: string[]) {
     this.props.colors = colors
+    this.touch()
+  }
+
+  get categories() {
+    return this.props.categories
+  }
+
+  set categories(categories: ProductCategoryList) {
+    this.props.categories = categories
     this.touch()
   }
 
@@ -109,13 +120,14 @@ export class Product extends Entity<ProductProps> {
   }
 
   static create(
-    props: Optional<ProductProps, 'createdAt' | 'images'>,
+    props: Optional<ProductProps, 'createdAt' | 'images' | 'categories'>,
     id?: UniqueEntityID,
   ) {
     const product = new Product(
       {
         ...props,
         images: props.images ?? new ProductImageList(),
+        categories: props.categories ?? new ProductCategoryList(),
         createdAt: props.createdAt ?? new Date(),
       },
       id,

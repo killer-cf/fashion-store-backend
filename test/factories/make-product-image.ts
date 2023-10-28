@@ -3,7 +3,6 @@ import {
   ProductImage,
   ProductImageProps,
 } from '@/domain/store/enterprise/entities/product-image'
-import { PrismaProductImageMapper } from '@/infra/database/prisma/mappers/prisma-product-image-mapper'
 import { PrismaService } from '@/infra/database/prisma/prisma.service'
 import { Injectable } from '@nestjs/common'
 

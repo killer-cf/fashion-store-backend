@@ -5,8 +5,12 @@ import { InMemoryProductImagesRepository } from 'test/repositories/in-memory-pro
 import { ProductStatus } from '../../enterprise/entities/value-objects/product-status'
 import { InMemoryBrandsRepository } from 'test/repositories/in-memory-brands-repository'
 import { InMemoryImagesRepository } from 'test/repositories/in-memory-images-repository'
+import { InMemoryCategoriesRepository } from 'test/repositories/in-memory-categories-repository'
+import { InMemoryProductCategoriesRepository } from 'test/repositories/in-memory-product-categories-repository'
 
 describe('List Products', () => {
+  let inMemoryProductCategoriesRepository: InMemoryProductCategoriesRepository
+  let inMemoryCategoriesRepository: InMemoryCategoriesRepository
   let inMemoryProductImagesRepository: InMemoryProductImagesRepository
   let inMemoryProductsRepository: InMemoryProductsRepository
   let inMemoryBrandsRepository: InMemoryBrandsRepository
@@ -14,6 +18,9 @@ describe('List Products', () => {
   let sut: ListProductsUseCase
 
   beforeEach(() => {
+    inMemoryProductCategoriesRepository =
+      new InMemoryProductCategoriesRepository()
+    inMemoryCategoriesRepository = new InMemoryCategoriesRepository()
     inMemoryProductImagesRepository = new InMemoryProductImagesRepository()
     inMemoryBrandsRepository = new InMemoryBrandsRepository()
     inMemoryImagesRepository = new InMemoryImagesRepository()
@@ -21,6 +28,8 @@ describe('List Products', () => {
       inMemoryProductImagesRepository,
       inMemoryBrandsRepository,
       inMemoryImagesRepository,
+      inMemoryProductCategoriesRepository,
+      inMemoryCategoriesRepository,
     )
     sut = new ListProductsUseCase(inMemoryProductsRepository)
   })

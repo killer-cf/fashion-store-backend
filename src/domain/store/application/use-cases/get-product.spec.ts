@@ -9,8 +9,12 @@ import { InMemoryImagesRepository } from 'test/repositories/in-memory-images-rep
 import { makeBrand } from 'test/factories/make-brand'
 import { makeImage } from 'test/factories/make-image'
 import { makeProductImage } from 'test/factories/make-product-image'
+import { InMemoryCategoriesRepository } from 'test/repositories/in-memory-categories-repository'
+import { InMemoryProductCategoriesRepository } from 'test/repositories/in-memory-product-categories-repository'
 
 describe('Get product', () => {
+  let inMemoryProductCategoriesRepository: InMemoryProductCategoriesRepository
+  let inMemoryCategoriesRepository: InMemoryCategoriesRepository
   let inMemoryProductImagesRepository: InMemoryProductImagesRepository
   let inMemoryProductsRepository: InMemoryProductsRepository
   let inMemoryBrandsRepository: InMemoryBrandsRepository
@@ -18,6 +22,8 @@ describe('Get product', () => {
   let sut: GetProductUseCase
 
   beforeEach(() => {
+    inMemoryProductCategoriesRepository =
+      new InMemoryProductCategoriesRepository()
     inMemoryProductImagesRepository = new InMemoryProductImagesRepository()
     inMemoryBrandsRepository = new InMemoryBrandsRepository()
     inMemoryImagesRepository = new InMemoryImagesRepository()
@@ -25,6 +31,8 @@ describe('Get product', () => {
       inMemoryProductImagesRepository,
       inMemoryBrandsRepository,
       inMemoryImagesRepository,
+      inMemoryProductCategoriesRepository,
+      inMemoryCategoriesRepository,
     )
     sut = new GetProductUseCase(inMemoryProductsRepository)
   })

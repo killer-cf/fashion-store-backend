@@ -26,6 +26,18 @@ import { UploadImageController } from './upload-image.controller'
 import { DatabaseModule } from '@/infra/database/database.module'
 import { CryptographyModule } from '@/infra/cryptography/cryptography.module'
 import { StorageModule } from '@/infra/storage/storage.module'
+import { CreateCategoryController } from './create-category.controller'
+import { CreateCategoryUseCase } from '@/domain/store/application/use-cases/create-category'
+import { DeleteCategoryController } from './delete-category.controller'
+import { DeleteCategoryUseCase } from '@/domain/store/application/use-cases/delete-category'
+import { EditCategoryController } from './edit-category.controller'
+import { EditCategoryUseCase } from '@/domain/store/application/use-cases/edit-category'
+import { ListCategoriesController } from './list-categories.controller'
+import { ListCategoriesUseCase } from '@/domain/store/application/use-cases/list-categories'
+import { EditProductController } from './edit-product.controller'
+import { EditProductUseCase } from '@/domain/store/application/use-cases/edit-product'
+import { ListProductsByCategoryController } from './list-products-by-category.controller'
+import { ListProductsByCategoryUseCase } from '@/domain/store/application/use-cases/list-products-by-category'
 
 @Module({
   imports: [DatabaseModule, CryptographyModule, StorageModule],
@@ -43,6 +55,12 @@ import { StorageModule } from '@/infra/storage/storage.module'
     DisableProductController,
     GetProductController,
     GetProductAdminController,
+    CreateCategoryController,
+    DeleteCategoryController,
+    EditCategoryController,
+    ListCategoriesController,
+    EditProductController,
+    ListProductsByCategoryController,
   ],
   providers: [
     CreateProductUseCase,
@@ -56,6 +74,12 @@ import { StorageModule } from '@/infra/storage/storage.module'
     ActivateProductUseCase,
     DisableProductUseCase,
     GetProductUseCase,
+    CreateCategoryUseCase,
+    DeleteCategoryUseCase,
+    EditCategoryUseCase,
+    ListCategoriesUseCase,
+    EditProductUseCase,
+    ListProductsByCategoryUseCase,
   ],
 })
 export class StoreControllersModule {}

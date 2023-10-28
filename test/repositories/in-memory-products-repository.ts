@@ -1,9 +1,14 @@
-import { ProductsRepository } from '@/domain/store/application/repositories/products-repository'
+import {
+  FindManyByCategoryProps,
+  ProductsRepository,
+} from '@/domain/store/application/repositories/products-repository'
 import { Product } from '@/domain/store/enterprise/entities/product'
 import { ProductDetails } from '@/domain/store/enterprise/entities/value-objects/product-details'
 import { InMemoryBrandsRepository } from './in-memory-brands-repository'
 import { InMemoryProductImagesRepository } from './in-memory-product-images-repository'
 import { InMemoryImagesRepository } from './in-memory-images-repository'
+import { InMemoryProductCategoriesRepository } from './in-memory-product-categories-repository'
+import { InMemoryCategoriesRepository } from './in-memory-categories-repository'
 
 export class InMemoryProductsRepository implements ProductsRepository {
   public items: Product[] = []
@@ -12,6 +17,8 @@ export class InMemoryProductsRepository implements ProductsRepository {
     private productImagesRepository: InMemoryProductImagesRepository,
     private brandsRepository: InMemoryBrandsRepository,
     private imagesRepository: InMemoryImagesRepository,
+    private productCategoriesRepository: InMemoryProductCategoriesRepository,
+    private categoriesRepository: InMemoryCategoriesRepository,
   ) {}
 
   async findById(id: string): Promise<Product | null> {
@@ -60,6 +67,25 @@ export class InMemoryProductsRepository implements ProductsRepository {
       return image
     })
 
+    const productCategories =
+      await this.productCategoriesRepository.findManyByProductId(
+        product.id.toString(),
+      )
+
+    const categories = productCategories.map((productCategory) => {
+      const category = this.categoriesRepository.items.find((category) =>
+        category.id.equals(productCategory.categoryId),
+      )
+
+      if (!category) {
+        throw new Error(
+          `category with id ${productCategory.id.toString()} does not exist`,
+        )
+      }
+
+      return category
+    })
+
     const productDetails = ProductDetails.create({
       productId: product.id,
       brandId: product.brandId,
@@ -71,9 +97,10 @@ export class InMemoryProductsRepository implements ProductsRepository {
       name: product.name,
       price: product.price,
       sku: product.sku,
-      images,
       createdAt: product.createdAt,
       updatedAt: product.updatedAt,
+      images,
+      categories,
     })
 
     return productDetails
@@ -103,10 +130,33 @@ export class InMemoryProductsRepository implements ProductsRepository {
     return products
   }
 
+  async findManyByCategoryId({
+    page,
+    search,
+    categoryId,
+  }: FindManyByCategoryProps): Promise<Product[]> {
+    let products = this.items
+      .filter((product) =>
+        product.categories
+          .getItems()
+          .some((category) => category.categoryId.toString() === categoryId),
+      )
+      .filter((product) => product.isActive() === true)
+
+    if (search.split('').length > 0) {
+      products = products.filter((product) =>
+        product.name.toLocaleLowerCase().includes(search.toLocaleLowerCase()),
+      )
+    }
+
+    return products.slice((page - 1) * 20, page * 20)
+  }
+
   async create(product: Product): Promise<void> {
     this.items.push(product)
 
     this.productImagesRepository.createMany(product.images.getItems())
+    this.productCategoriesRepository.createMany(product.categories.getItems())
   }
 
   async save(product: Product): Promise<void> {
@@ -116,5 +166,12 @@ export class InMemoryProductsRepository implements ProductsRepository {
 
     this.productImagesRepository.deleteMany(product.images.getRemovedItems())
     this.productImagesRepository.createMany(product.images.getNewItems())
+
+    this.productCategoriesRepository.deleteMany(
+      product.categories.getRemovedItems(),
+    )
+    this.productCategoriesRepository.createMany(
+      product.categories.getNewItems(),
+    )
   }
 }

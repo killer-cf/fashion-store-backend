@@ -2,6 +2,7 @@ import { ValueObject } from '@/core/entities/value-object'
 import { Image } from '../image'
 import { ProductStatus, Status } from './product-status'
 import { UniqueEntityID } from '@/core/entities/unique-entity-id'
+import { Category } from '../category'
 
 export type ProductDetailsProps = {
   productId: UniqueEntityID
@@ -14,6 +15,7 @@ export type ProductDetailsProps = {
   model: string
   colors: string[]
   images: Image[]
+  categories: Category[]
   status: ProductStatus
   createdAt: Date
   updatedAt?: Date | null
@@ -62,6 +64,10 @@ export class ProductDetails extends ValueObject<ProductDetailsProps> {
 
   get images() {
     return this.props.images
+  }
+
+  get categories() {
+    return this.props.categories
   }
 
   get createdAt() {
