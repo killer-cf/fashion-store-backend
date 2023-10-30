@@ -1,11 +1,13 @@
 import { Entity } from '@/core/entities/entity'
 import { UniqueEntityID } from '@/core/entities/unique-entity-id'
+import { ClientOrder } from './client-order'
 
 export interface ClientProps {
   name: string
   email: string
   password: string
   phone: string
+  orders?: ClientOrder[]
 }
 
 export class Client extends Entity<ClientProps> {
@@ -35,6 +37,10 @@ export class Client extends Entity<ClientProps> {
 
   set phone(number: string) {
     this.props.phone = number
+  }
+
+  get orders() {
+    return this.props.orders
   }
 
   static create(props: ClientProps, id?: UniqueEntityID) {
