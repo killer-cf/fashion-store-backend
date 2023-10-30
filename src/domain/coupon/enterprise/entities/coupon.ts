@@ -2,6 +2,8 @@ import { Entity } from '@/core/entities/entity'
 import { CouponStatus, Status } from './value-objects/coupon-status'
 import { Optional } from '@/core/types/optional'
 import { UniqueEntityID } from '@/core/entities/unique-entity-id'
+import { MinValueRule } from '../couponRules'
+import { CouponRules } from './value-objects/coupon-rules'
 
 export interface CouponProps {
   code: string
@@ -18,6 +20,8 @@ export interface CouponProps {
 }
 
 export class Coupon extends Entity<CouponProps> {
+  public rules: CouponRules = new CouponRules()
+
   get code() {
     return this.props.code
   }
@@ -95,6 +99,10 @@ export class Coupon extends Entity<CouponProps> {
     this.touch()
   }
 
+  public checkRules(orderValue: number) {
+    return this.rules.canApplyCoupon(orderValue)
+  }
+
   private touch() {
     this.props.updatedAt = new Date()
   }
@@ -110,6 +118,8 @@ export class Coupon extends Entity<CouponProps> {
       },
       id,
     )
+
+    coupon.rules.addRule(new MinValueRule(coupon.minValue))
 
     return coupon
   }

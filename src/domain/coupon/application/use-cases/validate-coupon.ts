@@ -44,7 +44,11 @@ export class ValidateCouponUseCase {
     if (this.dateValidator.isExpired(coupon.expiresAt))
       return left(new CouponExpiredError())
 
-    if (value < coupon.minValue) return left(new CouponMinValueError())
+    const checkEspecialRules = coupon.checkRules(value)
+
+    if (checkEspecialRules?.isLeft()) {
+      return left(checkEspecialRules.value)
+    }
 
     return right({
       couponDiscount: coupon.finalDiscount(value),
