@@ -33,6 +33,11 @@ export class OnOrderCreated implements EventHandler {
         coupon.use()
         order.couponValue = result.value.couponDiscount
 
+        if (result.value.discountType === 'freeShipping') {
+          order.couponValue = 0
+          order.deliveryFee = 0
+        }
+
         Promise.all([
           this.couponsRepository.save(coupon),
           this.ordersRepository.save(order),

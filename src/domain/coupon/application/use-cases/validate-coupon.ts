@@ -13,6 +13,8 @@ interface ValidateCouponUseCaseRequest {
   code: string
 }
 
+type DiscountReturnType = 'freeShipping' | 'forItems'
+
 type ValidateCouponUseCaseResponse = Either<
   | ResourceNotFoundError
   | CouponSoldOutError
@@ -20,6 +22,7 @@ type ValidateCouponUseCaseResponse = Either<
   | CouponMinValueError,
   {
     coupon: Coupon
+    discountType: DiscountReturnType
     couponDiscount: number
   }
 >
@@ -39,10 +42,23 @@ export class ValidateCouponUseCase {
 
     if (!coupon || coupon.isDisabled()) return left(new ResourceNotFoundError())
 
+    let discountType: DiscountReturnType = 'forItems'
+
+    let couponDiscount = coupon.finalDiscount(value)
+
     if (coupon.quantity === 0) return left(new CouponSoldOutError())
 
     if (this.dateValidator.isExpired(coupon.expiresAt))
       return left(new CouponExpiredError())
+
+    if (coupon.isFreeShipping) {
+      discountType = 'freeShipping'
+      couponDiscount = 0
+
+      // if (value < coupon.minValue) {
+      //   return left(new CouponMinValueError())
+      // }
+    }
 
     const checkEspecialRules = coupon.checkRules(value)
 
@@ -51,7 +67,8 @@ export class ValidateCouponUseCase {
     }
 
     return right({
-      couponDiscount: coupon.finalDiscount(value),
+      couponDiscount,
+      discountType,
       coupon,
     })
   }

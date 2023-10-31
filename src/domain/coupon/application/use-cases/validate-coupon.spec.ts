@@ -33,6 +33,8 @@ describe('Validate Coupon', () => {
       discountType: 'amount',
       expiresAt: new Date(),
       maxDiscount: 5000,
+      isFirstOrder: false,
+      isFreeShipping: false,
     })
     inMemoryCouponsRepository.create(coupon)
 
@@ -56,6 +58,8 @@ describe('Validate Coupon', () => {
       discountType: 'percentage',
       expiresAt: new Date(),
       maxDiscount: 2000,
+      isFirstOrder: false,
+      isFreeShipping: false,
     })
     inMemoryCouponsRepository.create(coupon)
 
@@ -66,6 +70,31 @@ describe('Validate Coupon', () => {
 
     expect(result.isRight()).toBe(true)
     if (result.isRight()) expect(result.value.couponDiscount).toBe(1000)
+  })
+
+  it('should be able to USE a free shipping coupon', async () => {
+    const coupon = Coupon.create({
+      code: 'FRETEGRATIS',
+      description: 'Cupom de primeira compra',
+      status: CouponStatus.create('ACTIVE'),
+      quantity: 1,
+      minValue: 10000,
+      discount: 5000,
+      discountType: 'amount',
+      expiresAt: new Date(),
+      maxDiscount: 5000,
+      isFirstOrder: false,
+      isFreeShipping: true,
+    })
+    inMemoryCouponsRepository.create(coupon)
+
+    const result = await sut.execute({
+      code: 'FRETEGRATIS',
+      value: 90000,
+    })
+
+    expect(result.isRight()).toBe(true)
+    if (result.isRight()) expect(result.value.discountType).toBe('freeShipping')
   })
 
   it('should be able to validate a coupon and return discount percentage when max discount', async () => {
@@ -79,6 +108,8 @@ describe('Validate Coupon', () => {
       discountType: 'percentage',
       expiresAt: new Date(),
       maxDiscount: 500,
+      isFirstOrder: false,
+      isFreeShipping: false,
     })
     inMemoryCouponsRepository.create(coupon)
 
@@ -102,6 +133,8 @@ describe('Validate Coupon', () => {
       discountType: 'amount',
       expiresAt: new Date(),
       maxDiscount: 5000,
+      isFirstOrder: false,
+      isFreeShipping: false,
     })
     inMemoryCouponsRepository.create(coupon)
 
@@ -125,6 +158,8 @@ describe('Validate Coupon', () => {
       discountType: 'amount',
       expiresAt: new Date('2023-01-01'),
       maxDiscount: 5000,
+      isFirstOrder: false,
+      isFreeShipping: false,
     })
     inMemoryCouponsRepository.create(coupon)
 
@@ -148,6 +183,8 @@ describe('Validate Coupon', () => {
       discountType: 'amount',
       expiresAt: new Date(),
       maxDiscount: 5000,
+      isFirstOrder: false,
+      isFreeShipping: false,
     })
     inMemoryCouponsRepository.create(coupon)
 
@@ -171,6 +208,8 @@ describe('Validate Coupon', () => {
       discountType: 'amount',
       expiresAt: new Date(),
       maxDiscount: 5000,
+      isFirstOrder: false,
+      isFreeShipping: false,
     })
     inMemoryCouponsRepository.create(coupon)
 

@@ -13,6 +13,7 @@ export interface OrderProps {
   state: OrderState
   items: OrderItem[]
   trackingCode?: string | null
+  deliveryFee: number
   couponCode?: string | null
   couponValue: number
   createdAt: Date
@@ -21,7 +22,7 @@ export interface OrderProps {
 
 export class Order extends AggregateRoot<OrderProps> {
   get totalPrice() {
-    return this.props.subtotal - this.props.couponValue
+    return this.props.subtotal + this.props.deliveryFee - this.props.couponValue
   }
 
   get subtotal() {
@@ -59,6 +60,15 @@ export class Order extends AggregateRoot<OrderProps> {
 
   set trackingCode(code: string | null | undefined) {
     this.props.trackingCode = code
+    this.touch()
+  }
+
+  get deliveryFee() {
+    return this.props.deliveryFee
+  }
+
+  set deliveryFee(value: number) {
+    this.props.deliveryFee = value
     this.touch()
   }
 
