@@ -12,6 +12,7 @@ interface CreateOrderUseCaseRequest {
   clientId: string
   address: string
   couponCode?: string
+  deliveryFee: number
   items: {
     productId: string
     quantity: number
@@ -41,6 +42,7 @@ export class CreateOrderUseCase {
     clientId,
     address,
     couponCode,
+    deliveryFee,
     items,
   }: CreateOrderUseCaseRequest): Promise<CreateOrderUseCaseResponse> {
     const verifiedProducts: ProductItem[] = []
@@ -64,9 +66,16 @@ export class CreateOrderUseCase {
       return acc + item.product.price * item.quantity
     }, 0)
 
+    const clientOrders =
+      await this.ordersRepository.findManyByClientId(clientId)
+
+    const isFirstOrder = clientOrders.length === 0
+
     const order = Order.create({
       address,
       couponCode,
+      deliveryFee,
+      isFirstOrder,
       clientId: new UniqueEntityID(clientId),
       subtotal: totalOfProductItems,
       items: [],

@@ -25,6 +25,7 @@ export class OnOrderCreated implements EventHandler {
       const result = await this.validateCoupon.execute({
         value: order.subtotal,
         code: order.couponCode,
+        isFirstOrder: order.isFirstOrder,
       })
 
       if (result.isRight()) {

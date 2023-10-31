@@ -7,10 +7,12 @@ import { DateValidator } from '../support/date-validator'
 import { CouponExpiredError } from './errors/coupon-expired-error'
 import { CouponMinValueError } from './errors/coupon-min-value-error'
 import { Coupon } from '../../enterprise/entities/coupon'
+import { CouponFirstOrderError } from './errors/coupon-first-order-error'
 
 interface ValidateCouponUseCaseRequest {
   value: number
   code: string
+  isFirstOrder: boolean
 }
 
 type DiscountReturnType = 'freeShipping' | 'forItems'
@@ -19,7 +21,8 @@ type ValidateCouponUseCaseResponse = Either<
   | ResourceNotFoundError
   | CouponSoldOutError
   | CouponExpiredError
-  | CouponMinValueError,
+  | CouponMinValueError
+  | CouponFirstOrderError,
   {
     coupon: Coupon
     discountType: DiscountReturnType
@@ -37,6 +40,7 @@ export class ValidateCouponUseCase {
   async execute({
     value,
     code,
+    isFirstOrder,
   }: ValidateCouponUseCaseRequest): Promise<ValidateCouponUseCaseResponse> {
     const coupon = await this.couponsRepository.findByCode(code)
 
@@ -54,10 +58,10 @@ export class ValidateCouponUseCase {
     if (coupon.isFreeShipping) {
       discountType = 'freeShipping'
       couponDiscount = 0
+    }
 
-      // if (value < coupon.minValue) {
-      //   return left(new CouponMinValueError())
-      // }
+    if (coupon.isFirstOrder && !isFirstOrder) {
+      return left(new CouponFirstOrderError())
     }
 
     const checkEspecialRules = coupon.checkRules(value)
