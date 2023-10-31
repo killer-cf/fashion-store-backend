@@ -14,7 +14,6 @@ export interface OrderProps {
   items: OrderItem[]
   trackingCode?: string | null
   deliveryFee: number
-  isFirstOrder: boolean
   couponCode?: string | null
   couponValue: number
   createdAt: Date
@@ -71,10 +70,6 @@ export class Order extends AggregateRoot<OrderProps> {
   set deliveryFee(value: number) {
     this.props.deliveryFee = value
     this.touch()
-  }
-
-  get isFirstOrder() {
-    return this.props.isFirstOrder
   }
 
   get couponCode() {

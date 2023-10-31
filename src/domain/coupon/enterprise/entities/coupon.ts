@@ -16,6 +16,7 @@ export interface CouponProps {
   quantity: number
   isFreeShipping: boolean
   isFirstOrder: boolean
+  isSingleUse: boolean
   expiresAt: Date
   updatedAt?: Date | null
   createdAt: Date
@@ -62,6 +63,10 @@ export class Coupon extends Entity<CouponProps> {
 
   get isFirstOrder() {
     return this.props.isFirstOrder
+  }
+
+  get isSingleUse() {
+    return this.props.isSingleUse
   }
 
   get expiresAt() {

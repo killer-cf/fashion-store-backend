@@ -5,8 +5,6 @@ import { InMemoryOrdersRepository } from 'test/repositories/in-memory-orders-rep
 import { InMemoryCouponsRepository } from 'test/repositories/in-memory-coupons-repository'
 import { SpyInstance } from 'vitest'
 import { waitFor } from 'test/utils/wait-for'
-import { ValidateCouponUseCase } from '../use-cases/validate-coupon'
-import { FakeDateValidator } from 'test/support/fake-date-validator'
 import { makeCoupon } from 'test/factories/make-coupon'
 import { Coupon } from '../../enterprise/entities/coupon'
 import { InMemoryBrandsRepository } from 'test/repositories/in-memory-brands-repository'
@@ -25,13 +23,10 @@ describe('On order created', () => {
   let inMemoryImagesRepository: InMemoryImagesRepository
   let inMemoryCouponsRepository: InMemoryCouponsRepository
   let inMemoryOrdersRepository: InMemoryOrdersRepository
-  let validateCouponUseCase: ValidateCouponUseCase
-  let fakeDateValidator: FakeDateValidator
 
   let couponsRepositorySave: SpyInstance<[coupon: Coupon], Promise<void>>
 
   beforeEach(() => {
-    fakeDateValidator = new FakeDateValidator()
     inMemoryCouponsRepository = new InMemoryCouponsRepository()
     inMemoryProductCategoriesRepository =
       new InMemoryProductCategoriesRepository()
@@ -49,18 +44,10 @@ describe('On order created', () => {
     inMemoryOrdersRepository = new InMemoryOrdersRepository(
       inMemoryProductsRepository,
     )
-    validateCouponUseCase = new ValidateCouponUseCase(
-      inMemoryCouponsRepository,
-      fakeDateValidator,
-    )
 
     couponsRepositorySave = vi.spyOn(inMemoryCouponsRepository, 'save')
 
-    new OnOrderCreated(
-      inMemoryOrdersRepository,
-      inMemoryCouponsRepository,
-      validateCouponUseCase,
-    )
+    new OnOrderCreated(inMemoryOrdersRepository, inMemoryCouponsRepository)
   })
 
   it('should use and decrease coupon when an order is created', async () => {
@@ -79,8 +66,6 @@ describe('On order created', () => {
 
     await waitFor(() => expect(couponsRepositorySave).toHaveBeenCalled())
     expect(inMemoryCouponsRepository.items[0].quantity).toBe(9)
-    console.log(inMemoryOrdersRepository.items[0].couponValue)
-    console.log(inMemoryOrdersRepository.items[0].totalPrice)
     expect(inMemoryOrdersRepository.items[0].couponValue).toBe(5000)
     expect(inMemoryOrdersRepository.items[0].totalPrice).toBe(6000)
   })
