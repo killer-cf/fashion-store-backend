@@ -16,7 +16,6 @@ export function makeOrder(
       address: faker.location.streetAddress(),
       items: [],
       deliveryFee: 5000,
-      isFirstOrder: false,
       ...override,
     },
     id,
