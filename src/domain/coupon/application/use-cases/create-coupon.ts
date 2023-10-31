@@ -15,6 +15,9 @@ interface CreateCouponUseCaseRequest {
   minValue: number
   quantity: number
   expiresAt: Date
+  isSingleUse: boolean
+  isFirstOrder: boolean
+  isFreeShipping: boolean
 }
 
 type CreateCouponUseCaseResponse = Either<
@@ -38,6 +41,9 @@ export class CreateCouponUseCase {
     minValue,
     quantity,
     expiresAt,
+    isSingleUse,
+    isFirstOrder,
+    isFreeShipping,
   }: CreateCouponUseCaseRequest): Promise<CreateCouponUseCaseResponse> {
     const couponOnRepository = await this.couponsRepository.findByCode(code)
 
@@ -55,6 +61,9 @@ export class CreateCouponUseCase {
       minValue,
       quantity,
       expiresAt,
+      isSingleUse,
+      isFirstOrder,
+      isFreeShipping,
     })
 
     await this.couponsRepository.create(coupon)

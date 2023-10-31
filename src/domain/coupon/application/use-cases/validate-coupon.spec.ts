@@ -8,6 +8,7 @@ import { CouponSoldOutError } from './errors/coupon-sold-out-error'
 import { CouponMinValueError } from './errors/coupon-min-value-error'
 import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error'
 import { CouponFirstOrderError } from './errors/coupon-first-order-error'
+import { CouponAlreadyBeenUsedError } from './errors/coupon-already-been-used-error'
 
 describe('Validate Coupon', () => {
   let inMemoryCouponsRepository: InMemoryCouponsRepository
@@ -43,10 +44,10 @@ describe('Validate Coupon', () => {
       code: 'PRIMEIRACOMPRA',
       value: 10000,
       isFirstOrder: false,
+      alreadyBeenUsed: false,
     })
 
     expect(result.isRight()).toBe(true)
-    if (result.isRight()) expect(result.value.couponDiscount).toBe(5000)
   })
 
   it('should be able to validate a coupon and return discount percentage', async () => {
@@ -69,10 +70,10 @@ describe('Validate Coupon', () => {
       code: 'PRIMEIRACOMPRA',
       value: 10000,
       isFirstOrder: false,
+      alreadyBeenUsed: false,
     })
 
     expect(result.isRight()).toBe(true)
-    if (result.isRight()) expect(result.value.couponDiscount).toBe(1000)
   })
 
   it('should be able to USE a free shipping coupon', async () => {
@@ -95,10 +96,10 @@ describe('Validate Coupon', () => {
       code: 'FRETEGRATIS',
       value: 90000,
       isFirstOrder: false,
+      alreadyBeenUsed: false,
     })
 
     expect(result.isRight()).toBe(true)
-    if (result.isRight()) expect(result.value.discountType).toBe('freeShipping')
   })
 
   it('should be able to validate a coupon and return discount percentage when max discount', async () => {
@@ -121,10 +122,10 @@ describe('Validate Coupon', () => {
       code: 'PRIMEIRACOMPRA',
       value: 10000,
       isFirstOrder: false,
+      alreadyBeenUsed: false,
     })
 
     expect(result.isRight()).toBe(true)
-    if (result.isRight()) expect(result.value.couponDiscount).toBe(500)
   })
 
   it('should be able to validate a coupon disabled', async () => {
@@ -147,6 +148,7 @@ describe('Validate Coupon', () => {
       code: 'PRIMEIRACOMPRA',
       value: 10000,
       isFirstOrder: false,
+      alreadyBeenUsed: false,
     })
 
     expect(result.isLeft()).toBe(true)
@@ -173,6 +175,7 @@ describe('Validate Coupon', () => {
       code: 'PRIMEIRACOMPRA',
       value: 10000,
       isFirstOrder: false,
+      alreadyBeenUsed: false,
     })
 
     expect(result.isLeft()).toBe(true)
@@ -199,6 +202,7 @@ describe('Validate Coupon', () => {
       code: 'PRIMEIRACOMPRA',
       value: 10000,
       isFirstOrder: false,
+      alreadyBeenUsed: false,
     })
 
     expect(result.isLeft()).toBe(true)
@@ -225,6 +229,7 @@ describe('Validate Coupon', () => {
       code: 'PRIMEIRACOMPRA',
       value: 9000,
       isFirstOrder: false,
+      alreadyBeenUsed: false,
     })
 
     expect(result.isLeft()).toBe(true)
@@ -251,9 +256,37 @@ describe('Validate Coupon', () => {
       code: 'PRIMEIRACOMPRA',
       value: 12000,
       isFirstOrder: false,
+      alreadyBeenUsed: false,
     })
 
     expect(result.isLeft()).toBe(true)
     expect(result.value).toBeInstanceOf(CouponFirstOrderError)
+  })
+
+  it('should be able to validate a coupon already been used', async () => {
+    const coupon = Coupon.create({
+      code: 'PRIMEIRACOMPRA',
+      description: 'Cupom de primeira compra',
+      status: CouponStatus.create('ACTIVE'),
+      quantity: 1,
+      minValue: 10000,
+      discount: 5000,
+      discountType: 'amount',
+      expiresAt: new Date(),
+      maxDiscount: 5000,
+      isFirstOrder: true,
+      isFreeShipping: false,
+    })
+    inMemoryCouponsRepository.create(coupon)
+
+    const result = await sut.execute({
+      code: 'PRIMEIRACOMPRA',
+      value: 12000,
+      isFirstOrder: false,
+      alreadyBeenUsed: true,
+    })
+
+    expect(result.isLeft()).toBe(true)
+    expect(result.value).toBeInstanceOf(CouponAlreadyBeenUsedError)
   })
 })

@@ -6,28 +6,24 @@ import { CouponSoldOutError } from './errors/coupon-sold-out-error'
 import { DateValidator } from '../support/date-validator'
 import { CouponExpiredError } from './errors/coupon-expired-error'
 import { CouponMinValueError } from './errors/coupon-min-value-error'
-import { Coupon } from '../../enterprise/entities/coupon'
 import { CouponFirstOrderError } from './errors/coupon-first-order-error'
+import { CouponAlreadyBeenUsedError } from './errors/coupon-already-been-used-error'
 
 interface ValidateCouponUseCaseRequest {
   value: number
   code: string
   isFirstOrder: boolean
+  alreadyBeenUsed: boolean
 }
-
-type DiscountReturnType = 'freeShipping' | 'forItems'
 
 type ValidateCouponUseCaseResponse = Either<
   | ResourceNotFoundError
   | CouponSoldOutError
   | CouponExpiredError
   | CouponMinValueError
-  | CouponFirstOrderError,
-  {
-    coupon: Coupon
-    discountType: DiscountReturnType
-    couponDiscount: number
-  }
+  | CouponFirstOrderError
+  | CouponAlreadyBeenUsedError,
+  null
 >
 
 @Injectable()
@@ -41,24 +37,20 @@ export class ValidateCouponUseCase {
     value,
     code,
     isFirstOrder,
+    alreadyBeenUsed,
   }: ValidateCouponUseCaseRequest): Promise<ValidateCouponUseCaseResponse> {
+    if (alreadyBeenUsed) {
+      return left(new CouponAlreadyBeenUsedError())
+    }
+
     const coupon = await this.couponsRepository.findByCode(code)
 
     if (!coupon || coupon.isDisabled()) return left(new ResourceNotFoundError())
-
-    let discountType: DiscountReturnType = 'forItems'
-
-    let couponDiscount = coupon.finalDiscount(value)
 
     if (coupon.quantity === 0) return left(new CouponSoldOutError())
 
     if (this.dateValidator.isExpired(coupon.expiresAt))
       return left(new CouponExpiredError())
-
-    if (coupon.isFreeShipping) {
-      discountType = 'freeShipping'
-      couponDiscount = 0
-    }
 
     if (coupon.isFirstOrder && !isFirstOrder) {
       return left(new CouponFirstOrderError())
@@ -70,10 +62,6 @@ export class ValidateCouponUseCase {
       return left(checkEspecialRules.value)
     }
 
-    return right({
-      couponDiscount,
-      discountType,
-      coupon,
-    })
+    return right(null)
   }
 }
