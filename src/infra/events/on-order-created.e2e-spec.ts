@@ -69,6 +69,8 @@ describe('On Create order event (e2e)', () => {
       .send({
         address: 'Rua Oscar Raposo, 200',
         couponCode: coupon.code,
+        value: 190000,
+        deliveryFee: 0,
         items: [
           {
             productId: product1.id.toString(),

@@ -46,6 +46,9 @@ describe('Create coupon (e2e)', () => {
         discountType: 'amount',
         expiresAt: new Date(),
         maxDiscount: 5000,
+        isSingleUse: false,
+        isFirstOrder: false,
+        isFreeShipping: false,
       })
 
     expect(response.statusCode).toBe(201)
@@ -77,6 +80,9 @@ describe('Create coupon (e2e)', () => {
         discountType: 'amount',
         expiresAt: new Date(),
         maxDiscount: 5000,
+        isSingleUse: false,
+        isFirstOrder: false,
+        isFreeShipping: false,
       })
 
     expect(response.statusCode).toBe(403)
