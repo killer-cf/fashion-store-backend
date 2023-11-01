@@ -37,6 +37,7 @@ describe('Validate Coupon', () => {
       maxDiscount: 5000,
       isFirstOrder: false,
       isFreeShipping: false,
+      isSingleUse: false,
     })
     inMemoryCouponsRepository.create(coupon)
 
@@ -63,6 +64,7 @@ describe('Validate Coupon', () => {
       maxDiscount: 2000,
       isFirstOrder: false,
       isFreeShipping: false,
+      isSingleUse: false,
     })
     inMemoryCouponsRepository.create(coupon)
 
@@ -89,6 +91,7 @@ describe('Validate Coupon', () => {
       maxDiscount: 5000,
       isFirstOrder: false,
       isFreeShipping: true,
+      isSingleUse: false,
     })
     inMemoryCouponsRepository.create(coupon)
 
@@ -115,6 +118,7 @@ describe('Validate Coupon', () => {
       maxDiscount: 500,
       isFirstOrder: false,
       isFreeShipping: false,
+      isSingleUse: false,
     })
     inMemoryCouponsRepository.create(coupon)
 
@@ -141,6 +145,7 @@ describe('Validate Coupon', () => {
       maxDiscount: 5000,
       isFirstOrder: false,
       isFreeShipping: false,
+      isSingleUse: false,
     })
     inMemoryCouponsRepository.create(coupon)
 
@@ -168,6 +173,7 @@ describe('Validate Coupon', () => {
       maxDiscount: 5000,
       isFirstOrder: false,
       isFreeShipping: false,
+      isSingleUse: false,
     })
     inMemoryCouponsRepository.create(coupon)
 
@@ -195,6 +201,7 @@ describe('Validate Coupon', () => {
       maxDiscount: 5000,
       isFirstOrder: false,
       isFreeShipping: false,
+      isSingleUse: false,
     })
     inMemoryCouponsRepository.create(coupon)
 
@@ -222,6 +229,7 @@ describe('Validate Coupon', () => {
       maxDiscount: 5000,
       isFirstOrder: false,
       isFreeShipping: false,
+      isSingleUse: false,
     })
     inMemoryCouponsRepository.create(coupon)
 
@@ -249,6 +257,7 @@ describe('Validate Coupon', () => {
       maxDiscount: 5000,
       isFirstOrder: true,
       isFreeShipping: false,
+      isSingleUse: false,
     })
     inMemoryCouponsRepository.create(coupon)
 
@@ -276,6 +285,7 @@ describe('Validate Coupon', () => {
       maxDiscount: 5000,
       isFirstOrder: true,
       isFreeShipping: false,
+      isSingleUse: true,
     })
     inMemoryCouponsRepository.create(coupon)
 

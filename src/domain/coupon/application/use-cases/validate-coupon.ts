@@ -39,13 +39,13 @@ export class ValidateCouponUseCase {
     isFirstOrder,
     alreadyBeenUsed,
   }: ValidateCouponUseCaseRequest): Promise<ValidateCouponUseCaseResponse> {
-    if (alreadyBeenUsed) {
-      return left(new CouponAlreadyBeenUsedError())
-    }
-
     const coupon = await this.couponsRepository.findByCode(code)
 
     if (!coupon || coupon.isDisabled()) return left(new ResourceNotFoundError())
+
+    if (alreadyBeenUsed && coupon.isSingleUse) {
+      return left(new CouponAlreadyBeenUsedError())
+    }
 
     if (coupon.quantity === 0) return left(new CouponSoldOutError())
 
