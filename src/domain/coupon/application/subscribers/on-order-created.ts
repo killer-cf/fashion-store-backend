@@ -4,14 +4,12 @@ import { OrderCreatedEvent } from '@/domain/store/enterprise/events/order-create
 import { Injectable } from '@nestjs/common'
 import { OrdersRepository } from '@/domain/store/application/repositories/orders-repository'
 import { CouponsRepository } from '../repositories/coupons-repository'
-import { ValidateCouponUseCase } from '../use-cases/validate-coupon'
 
 @Injectable()
 export class OnOrderCreated implements EventHandler {
   constructor(
     private ordersRepository: OrdersRepository,
     private couponsRepository: CouponsRepository,
-    private validateCoupon: ValidateCouponUseCase,
   ) {
     this.setupSubscriptions()
   }
@@ -22,16 +20,16 @@ export class OnOrderCreated implements EventHandler {
 
   private async useCoupon({ order }: OrderCreatedEvent) {
     if (order.couponCode && !order.state.isCanceled()) {
-      const result = await this.validateCoupon.execute({
-        value: order.subtotal,
-        code: order.couponCode,
-      })
+      const coupon = await this.couponsRepository.findByCode(order.couponCode)
 
-      if (result.isRight()) {
-        const coupon = result.value.coupon
-
+      if (coupon) {
         coupon.use()
-        order.couponValue = result.value.couponDiscount
+        order.couponValue = coupon.finalDiscount(order.subtotal)
+
+        if (coupon.isFreeShipping) {
+          order.couponValue = 0
+          order.deliveryFee = 0
+        }
 
         Promise.all([
           this.couponsRepository.save(coupon),

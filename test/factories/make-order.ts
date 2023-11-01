@@ -15,6 +15,7 @@ export function makeOrder(
       subtotal: 1,
       address: faker.location.streetAddress(),
       items: [],
+      deliveryFee: 5000,
       ...override,
     },
     id,

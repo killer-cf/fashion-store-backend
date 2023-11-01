@@ -4,6 +4,9 @@ import { Order } from '@/domain/store/enterprise/entities/order'
 import { OrdersRepository } from '@/domain/store/application/repositories/orders-repository'
 import { PrismaOrderMapper } from '../mappers/prisma-order-mapper'
 import { DomainEvents } from '@/core/events/domain-events'
+import { PaginationParams } from '@/core/repositories/pagination-params'
+import { ClientOrderWithProduct } from '@/domain/store/enterprise/entities/value-objects/client-order-with-product'
+import { PrismaClientOrderWithProductMapper } from '../mappers/prisma-client-order-with-product-mapper'
 
 @Injectable()
 export class PrismaOrdersRepository implements OrdersRepository {
@@ -34,6 +37,47 @@ export class PrismaOrdersRepository implements OrdersRepository {
       include: { order_items: true },
       take: 20,
       skip: (page - 1) * 20,
+    })
+
+    return orders.map(PrismaOrderMapper.toDomain)
+  }
+
+  async findManyByClientIdWithProduct(
+    clientId: string,
+    { page }: PaginationParams,
+  ): Promise<ClientOrderWithProduct[]> {
+    const orders = await this.prisma.order.findMany({
+      orderBy: {
+        createdAt: 'desc',
+      },
+      where: {
+        client_id: clientId,
+      },
+      include: {
+        order_items: {
+          include: {
+            product: true,
+          },
+        },
+      },
+      take: 20,
+      skip: (page - 1) * 20,
+    })
+
+    return orders.map(PrismaClientOrderWithProductMapper.toDomain)
+  }
+
+  async findManyByClientId(clientId: string): Promise<Order[]> {
+    const orders = await this.prisma.order.findMany({
+      orderBy: {
+        createdAt: 'desc',
+      },
+      where: {
+        client_id: clientId,
+      },
+      include: {
+        order_items: true,
+      },
     })
 
     return orders.map(PrismaOrderMapper.toDomain)

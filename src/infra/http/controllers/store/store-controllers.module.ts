@@ -38,9 +38,16 @@ import { ListProductsController } from './product/list-products.controller'
 import { AuthenticateController } from './user/authenticate.controller'
 import { CreateAccountController } from './user/create-account.controller'
 import { DatabaseModule } from '@/infra/database/database.module'
+import { ValidateCouponUseCase } from '@/domain/coupon/application/use-cases/validate-coupon'
+import { DateValidationModule } from '@/infra/date-validation/date-validation.module'
 
 @Module({
-  imports: [DatabaseModule, CryptographyModule, StorageModule],
+  imports: [
+    DatabaseModule,
+    CryptographyModule,
+    StorageModule,
+    DateValidationModule,
+  ],
   controllers: [
     CreateProductController,
     ListProductsController,
@@ -80,6 +87,7 @@ import { DatabaseModule } from '@/infra/database/database.module'
     ListCategoriesUseCase,
     EditProductUseCase,
     ListProductsByCategoryUseCase,
+    ValidateCouponUseCase,
   ],
 })
 export class StoreControllersModule {}

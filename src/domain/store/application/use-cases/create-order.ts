@@ -12,6 +12,7 @@ interface CreateOrderUseCaseRequest {
   clientId: string
   address: string
   couponCode?: string
+  deliveryFee: number
   items: {
     productId: string
     quantity: number
@@ -41,6 +42,7 @@ export class CreateOrderUseCase {
     clientId,
     address,
     couponCode,
+    deliveryFee,
     items,
   }: CreateOrderUseCaseRequest): Promise<CreateOrderUseCaseResponse> {
     const verifiedProducts: ProductItem[] = []
@@ -67,6 +69,7 @@ export class CreateOrderUseCase {
     const order = Order.create({
       address,
       couponCode,
+      deliveryFee,
       clientId: new UniqueEntityID(clientId),
       subtotal: totalOfProductItems,
       items: [],

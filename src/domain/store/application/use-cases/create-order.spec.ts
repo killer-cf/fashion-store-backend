@@ -25,7 +25,6 @@ describe('Create Order', () => {
     inMemoryCategoriesRepository = new InMemoryCategoriesRepository()
     inMemoryBrandsRepository = new InMemoryBrandsRepository()
     inMemoryImagesRepository = new InMemoryImagesRepository()
-    inMemoryOrdersRepository = new InMemoryOrdersRepository()
     inMemoryProductImagesRepository = new InMemoryProductImagesRepository()
     inMemoryProductsRepository = new InMemoryProductsRepository(
       inMemoryProductImagesRepository,
@@ -33,6 +32,9 @@ describe('Create Order', () => {
       inMemoryImagesRepository,
       inMemoryProductCategoriesRepository,
       inMemoryCategoriesRepository,
+    )
+    inMemoryOrdersRepository = new InMemoryOrdersRepository(
+      inMemoryProductsRepository,
     )
     sut = new CreateOrderUseCase(
       inMemoryOrdersRepository,
@@ -54,6 +56,7 @@ describe('Create Order', () => {
     const result = await sut.execute({
       clientId: 'client-id',
       address: 'rua oscar raposso, 188',
+      deliveryFee: 1000,
       items: [
         {
           productId: product1.id.toString(),
@@ -72,7 +75,7 @@ describe('Create Order', () => {
       expect(inMemoryOrdersRepository.items[0].state.toString()).toEqual(
         'PENDING',
       )
-      expect(inMemoryOrdersRepository.items[0].totalPrice).toEqual(8000)
+      expect(inMemoryOrdersRepository.items[0].totalPrice).toEqual(9000)
       expect(inMemoryOrdersRepository.items[0].items).toHaveLength(2)
     }
   })
@@ -91,6 +94,7 @@ describe('Create Order', () => {
     const result = await sut.execute({
       clientId: 'client-id',
       address: 'rua oscar raposso, 188',
+      deliveryFee: 1000,
       items: [
         {
           productId: 'invalid-id',

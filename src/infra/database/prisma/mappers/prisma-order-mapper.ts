@@ -36,6 +36,7 @@ export class PrismaOrderMapper {
         trackingCode: raw.trackingCode,
         items,
         clientId: new UniqueEntityID(raw.client_id),
+        deliveryFee: raw.deliveryFee,
         createdAt: raw.createdAt,
         updatedAt: raw.updatedAt,
       },
@@ -44,15 +45,6 @@ export class PrismaOrderMapper {
   }
 
   static toPrisma(order: Order): Prisma.OrderUncheckedCreateInput {
-    // const orderItems: Prisma.OrderItemUncheckedCreateWithoutOrderInput[] =
-    //   order.items.map((item) => {
-    //     return {
-    //       id: item.id.toString(),
-    //       product_id: item.productId.toString(),
-    //       quantity: item.quantity,
-    //     }
-    //   })
-
     return {
       id: order.id.toString(),
       address: order.address,
@@ -61,6 +53,7 @@ export class PrismaOrderMapper {
       subtotal: order.subtotal,
       couponValue: order.couponValue,
       couponCode: order.couponCode,
+      deliveryFee: order.deliveryFee,
       client_id: order.clientId.toString(),
       state: order.state.toString(),
       createdAt: order.createdAt,

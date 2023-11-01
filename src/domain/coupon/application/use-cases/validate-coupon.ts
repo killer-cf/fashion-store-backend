@@ -6,22 +6,24 @@ import { CouponSoldOutError } from './errors/coupon-sold-out-error'
 import { DateValidator } from '../support/date-validator'
 import { CouponExpiredError } from './errors/coupon-expired-error'
 import { CouponMinValueError } from './errors/coupon-min-value-error'
-import { Coupon } from '../../enterprise/entities/coupon'
+import { CouponFirstOrderError } from './errors/coupon-first-order-error'
+import { CouponAlreadyBeenUsedError } from './errors/coupon-already-been-used-error'
 
 interface ValidateCouponUseCaseRequest {
   value: number
   code: string
+  isFirstOrder: boolean
+  alreadyBeenUsed: boolean
 }
 
 type ValidateCouponUseCaseResponse = Either<
   | ResourceNotFoundError
   | CouponSoldOutError
   | CouponExpiredError
-  | CouponMinValueError,
-  {
-    coupon: Coupon
-    couponDiscount: number
-  }
+  | CouponMinValueError
+  | CouponFirstOrderError
+  | CouponAlreadyBeenUsedError,
+  null
 >
 
 @Injectable()
@@ -34,21 +36,32 @@ export class ValidateCouponUseCase {
   async execute({
     value,
     code,
+    isFirstOrder,
+    alreadyBeenUsed,
   }: ValidateCouponUseCaseRequest): Promise<ValidateCouponUseCaseResponse> {
     const coupon = await this.couponsRepository.findByCode(code)
 
     if (!coupon || coupon.isDisabled()) return left(new ResourceNotFoundError())
+
+    if (alreadyBeenUsed && coupon.isSingleUse) {
+      return left(new CouponAlreadyBeenUsedError())
+    }
 
     if (coupon.quantity === 0) return left(new CouponSoldOutError())
 
     if (this.dateValidator.isExpired(coupon.expiresAt))
       return left(new CouponExpiredError())
 
-    if (value < coupon.minValue) return left(new CouponMinValueError())
+    if (coupon.isFirstOrder && !isFirstOrder) {
+      return left(new CouponFirstOrderError())
+    }
 
-    return right({
-      couponDiscount: coupon.finalDiscount(value),
-      coupon,
-    })
+    const checkEspecialRules = coupon.checkRules(value)
+
+    if (checkEspecialRules?.isLeft()) {
+      return left(checkEspecialRules.value)
+    }
+
+    return right(null)
   }
 }

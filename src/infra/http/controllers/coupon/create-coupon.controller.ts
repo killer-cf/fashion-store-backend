@@ -21,6 +21,9 @@ const createCouponSchema = z.object({
   minValue: z.number(),
   quantity: z.number(),
   expiresAt: z.coerce.date(),
+  isSingleUse: z.boolean(),
+  isFirstOrder: z.boolean(),
+  isFreeShipping: z.boolean(),
 })
 
 type CreateCouponBody = z.infer<typeof createCouponSchema>
@@ -44,6 +47,9 @@ export class CreateCouponController {
       minValue,
       quantity,
       expiresAt,
+      isSingleUse,
+      isFirstOrder,
+      isFreeShipping,
     } = body
 
     const result = await this.createCoupon.execute({
@@ -56,6 +62,9 @@ export class CreateCouponController {
       minValue,
       quantity,
       expiresAt,
+      isSingleUse,
+      isFirstOrder,
+      isFreeShipping,
     })
 
     if (result.isLeft()) {

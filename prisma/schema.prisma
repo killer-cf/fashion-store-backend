@@ -62,6 +62,7 @@ model Order {
   subtotal     Int
   address      String
   trackingCode String?
+  deliveryFee  Int
   couponCode   String?
   couponValue  Int
   state        String
@@ -109,18 +110,21 @@ model Image {
 }
 
 model Coupon {
-  id           String       @id @default(uuid())
-  code         String       @unique
-  status       CouponStatus
-  description  String
-  discount     Int
-  discountType String
-  maxDiscount  Int
-  minValue     Int
-  quantity     Int
-  expiresAt    DateTime
-  createdAt    DateTime     @default(now()) @map("created_at")
-  updatedAt    DateTime?    @updatedAt @map("updated_at")
+  id             String       @id @default(uuid())
+  code           String       @unique
+  status         CouponStatus
+  description    String
+  discount       Int
+  discountType   String
+  maxDiscount    Int
+  minValue       Int
+  quantity       Int
+  isFreeShipping Boolean
+  isFirstOrder   Boolean
+  isSingleUse    Boolean
+  expiresAt      DateTime
+  createdAt      DateTime     @default(now()) @map("created_at")
+  updatedAt      DateTime?    @updatedAt @map("updated_at")
 
   @@map("coupons")
 }
