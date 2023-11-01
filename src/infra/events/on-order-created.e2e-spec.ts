@@ -46,6 +46,8 @@ describe('On Create order event (e2e)', () => {
 
     const coupon = await couponFactory.makePrismaCoupon({
       quantity: 10,
+      discount: 10000,
+      minValue: 0,
     })
 
     const brand = await brandFactory.makePrismaBrand()
@@ -69,7 +71,7 @@ describe('On Create order event (e2e)', () => {
       .send({
         address: 'Rua Oscar Raposo, 200',
         couponCode: coupon.code,
-        value: 190000,
+        value: 210000,
         deliveryFee: 0,
         items: [
           {
@@ -92,5 +94,14 @@ describe('On Create order event (e2e)', () => {
 
       expect(couponOnDatabase?.quantity).toBe(9)
     })
+
+    const order = await prisma.order.findFirst({
+      where: {
+        client_id: client.id.toString(),
+      },
+    })
+
+    expect(order?.subtotal).toEqual(210000)
+    expect(order?.totalPrice).toEqual(200000)
   })
 })
